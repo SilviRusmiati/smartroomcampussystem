@@ -59,6 +59,23 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 12px; color: #ffffff; outline: none;
     }
+
+    /* CSS BARU UNTUK LUPA PASSWORD */
+    .forgot-password {
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 25px;
+    }
+    .forgot-password a {
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
     
     .btn-login {
       width: 100%; background: #333333; color: #ffffff;
@@ -107,6 +124,10 @@
         <div class="input-group">
           <label for="password">Password</label>
           <input type="password" id="password" placeholder="•••••">
+        </div>
+
+        <div class="forgot-password">
+          <a href="lupa_password.html">Lupa Password</a>
         </div>
         
         <button type="submit" class="btn-login">Login Admin Sarana & Prasarana</button>
