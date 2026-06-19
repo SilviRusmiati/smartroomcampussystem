@@ -22,11 +22,7 @@
       position: sticky; top: 0; z-index: 100;
     }
     .brand { display: flex; align-items: center; gap: 15px; }
-    .logo-placeholder {
-      width: var(--logo-size); height: var(--logo-size); background: var(--accent);
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      color: #fff; font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
-    }
+    .logo-icon img { width: var(--logo-size); height: auto; object-fit: contain; }
     .brand-text .title {
       font-family: 'Playfair Display', serif; font-size: 1.6rem;
       font-weight: 700; color: var(--accent); letter-spacing: 0.5px; line-height: 1.1;
@@ -136,13 +132,18 @@
 </head>
 <body>
 
-  <header class="site-header">
-    <img src="Logo .png" alt="Smarts Room" style="height:36px">
-    <div>
-        <div class="brand-name">Smarts Romm</div>
-        <div class="brand-sub">Campus System</div>
+  <header class="navbar">
+    <div class="brand">
+      <div class="logo-icon"><img src="Logo.png" alt="Logo"></div>
+      <div class="brand-text">
+        <div class="title">Smarts Room</div>
+        <div class="subtitle">Campus System</div>
+      </div>
     </div>
-  <section class="register-section">
+    <div class="nav-right">
+      <span class="nav-text">Selamat Datang di Website Kami!</span>
+    </div>
+  </header>
 
   <section class="register-section">
     <div class="register-card">
@@ -243,7 +244,7 @@
         <button type="submit" class="btn-register">Daftar Sekarang</button>
 
         <div class="login-link">
-          Sudah punya akun? <a href="loginmahasiswa.html">Login di sini</a>
+          Sudah punya akun? <a href="LoginSapras.html">Login di sini</a>
         </div>
 
       </form>
