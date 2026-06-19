@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Dosen - Smarts Room</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --text-main: #1e293b;
+      --accent: #2a3e59; 
+      --dark-overlay: rgba(30, 41, 59, 0.75); 
+      --logo-size: 55px; 
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: #e9e6e2; -webkit-font-smoothing: antialiased; }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 60px; background: #e9e6e2;
+      border-bottom: 4px solid var(--accent);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .brand { display: flex; align-items: center; gap: 15px; }
+    .logo-icon img { width: var(--logo-size); height: auto; object-fit: contain; }
+    .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .brand-text .subtitle { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+    /* LOGIN SECTION */
+    .login-section {
+      min-height: calc(100vh - 80px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 20px;
+      background: url("bg.biru.jpeg"); 
+      background-size: cover; background-position: center;
+    }
+
+    .login-card {
+      width: 100%; max-width: 420px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px; padding: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .input-group { margin-bottom: 20px; text-align: left; }
+    .input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+    .input-group input {
+      width: 100%; padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px; color: #ffffff; outline: none;
+    }
+    
+    .btn-login {
+      width: 100%; background: #333333; color: #ffffff;
+      padding: 14px; border: none; border-radius: 12px;
+      font-weight: 700; cursor: pointer; transition: 0.3s;
+    }
+    .btn-login:hover { background: #000000; transform: translateY(-2px); }
+
+    /* CSS BARU UNTUK REGISTRASI */
+    .register-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .register-link a {
+      color: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="brand">
+      <div class="logo-icon"><img src="logo .png" alt="Logo"></div>
+      <div class="brand-text">
+        <div class="title">Smarts Room</div>
+        <div class="subtitle">Campus System</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="login-section">
+    <div class="login-card">
+      <form action="#" method="POST">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Masukkan username">
+        </div>
+       
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="•••••">
+        </div>
+        
+        <button type="submit" class="btn-login">Login Admin Sarana & Prasarana </button>
+        
+        <div class="register-link">
+          Belum punya akun? <a href="#">Registrasi Sekarang</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</body>
+</html>

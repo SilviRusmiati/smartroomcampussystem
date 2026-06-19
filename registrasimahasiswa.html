@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registrasi Mahasiswa - Smarts Room</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+   <style>
+    /* =========================================
+       CSS VARIABLES UNTUK WARNA & UKURAN
+       ========================================= */
+    :root {
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent: #2a3e59; 
+      --logo-size: 55px; 
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+    }
+
+    body {
+      background: #e9e6e2;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* =========================================
+       NAVBAR - TETAP SAMA SEPERTI HALAMAN UTAMA
+       ========================================= */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 60px;
+      background: #e9e6e2;
+      border-bottom: 4px solid var(--accent);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon img {
+      width: var(--logo-size);
+      height: auto;
+      max-height: 80px;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-text .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+
+    .brand-text .subtitle {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+      padding: 8px 20px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+    }
+
+    /* =========================================
+       LOGIN SECTION - BACKGROUND & LAYOUT
+       ========================================= */
+    .login-section {
+      min-height: calc(100vh - 80px); /* Memenuhi sisa layar di bawah navbar */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+
+      background: url("bg.biru.jpeg"); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* =========================================
+       GLASSMORPHISM CARD (KOTAK LOGIN)
+       ========================================= */
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255, 255, 255, 0.15); /* Putih transparan */
+      backdrop-filter: blur(15px); /* Efek kaca (blur background) */
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* =========================================
+       FORM ELEMENTS
+       ========================================= */
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.2); /* Input transparan */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    .input-group input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 25px;
+    }
+
+    .forgot-password a {
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-login {
+      width: 100%;
+      background: #333333; /* Warna gelap solid agar menonjol */
+      color: #ffffff;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-login:hover {
+      background: #000000;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .register-link a {
+      color: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* =========================================
+       ANIMASI AWAL
+       ========================================= */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================
+       RESPONSIVE (UNTUK TAMPILAN HP)
+       ========================================= */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+        text-align: center;
+      }
+      .brand {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .login-card {
+        padding: 30px 20px;
+      }
+    }
+  </style> 
+
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="brand">
+      <div class="logo-icon">
+        <!-- Ganti src="logo .png" dengan path logo asli Anda -->
+        <!-- Jika logo tidak ditemukan, tampilkan placeholder teks -->
+        <div class="logo-placeholder">SR</div>
+      </div>
+      <div class="brand-text">
+        <div class="title">Smarts Room</div>
+        <div class="subtitle">Campus System</div>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <span class="nav-text">Selamat Datang di Website Kami!</span>
+    </div>
+  </header>
+
+  <!-- REGISTER SECTION -->
+  <section class="register-section">
+    <div class="register-card">
+
+      <div class="form-title">
+        <h2>Registrasi Mahasiswa</h2>
+        <p>Lengkapi data diri Anda untuk membuat akun</p>
+      </div>
+
+      <form action="#" method="POST">
+
+        <!-- DATA PRIBADI -->
+        <div class="section-label">Data Pribadi</div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="nim">NIM</label>
+            <input type="text" id="nim" name="nim" placeholder="Contoh: 2024001001" required>
+          </div>
+          <div class="input-group">
+            <label for="angkatan">Angkatan</label>
+            <input type="text" id="angkatan" name="angkatan" placeholder="Contoh: 2024" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="nama">Nama Lengkap</label>
+          <input type="text" id="nama" name="nama" placeholder="Nama sesuai KTP" required>
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email Aktif</label>
+          <input type="email" id="email" name="email" placeholder="nama@email.com" required>
+        </div>
+
+        <div class="input-group">
+          <label for="no_hp">No. Handphone</label>
+          <input type="tel" id="no_hp" name="no_hp" placeholder="08xxxxxxxxxx" required>
+        </div>
+
+        <hr class="divider">
+
+        <!-- DATA AKADEMIK -->
+        <div class="section-label">Data Akademik</div>
+
+        <div class="input-group">
+          <label for="jurusan">Jurusan / Program Studi</label>
+          <div class="select-wrapper">
+            <select id="jurusan" name="jurusan" required>
+              <option value="" disabled selected>Pilih Program Studi</option>
+              <option value="ti">Teknik Informatika</option>
+              <option value="si">Sistem Informasi</option>
+              <option value="tk">Teknik Komputer</option>
+              <option value="mn">Manajemen</option>
+              <option value="ak">Akuntansi</option>
+              <option value="hk">Hukum</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="fakultas">Fakultas</label>
+          <div class="select-wrapper">
+            <select id="fakultas" name="fakultas" required>
+              <option value="" disabled selected>Pilih Fakultas</option>
+              <option value="ftik">Fak. Teknologi Informasi & Komputer</option>
+              <option value="feb">Fak. Ekonomi & Bisnis</option>
+              <option value="fh">Fak. Hukum</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- KEAMANAN AKUN -->
+        <div class="section-label">Keamanan Akun</div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Min. 8 karakter" required>
+            <button type="button" class="toggle-password" onclick="togglePass('password', this)" title="Tampilkan password">
+              👁
+            </button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="confirm_password">Konfirmasi Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password" required>
+            <button type="button" class="toggle-password" onclick="togglePass('confirm_password', this)" title="Tampilkan password">
+              👁
+            </button>
+          </div>
+        </div>
+
+        <!-- TERMS & CONDITIONS -->
+        <div class="terms-group">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms">
+            Saya menyetujui <a href="#">Syarat & Ketentuan</a> serta
+            <a href="#">Kebijakan Privasi</a> Smarts Room Campus System.
+          </label>
+        </div>
+
+        <button type="submit" class="btn-register">Daftar Sekarang</button>
+
+        <div class="login-link">
+          Sudah punya akun? <a href="loginmahasiswa.html">Login di sini</a>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <script>
+    // Toggle show/hide password
+    function togglePass(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.style.opacity = '1';
+      } else {
+        input.type = 'password';
+        btn.style.opacity = '0.7';
+      }
+    }
+
+    // Validasi konfirmasi password sebelum submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const pw  = document.getElementById('password').value;
+      const cpw = document.getElementById('confirm_password').value;
+      if (pw !== cpw) {
+        e.preventDefault();
+        alert('Password dan Konfirmasi Password tidak cocok!');
+        document.getElementById('confirm_password').focus();
+      }
+    });
+  </script>
+
+</body>
+</html>
