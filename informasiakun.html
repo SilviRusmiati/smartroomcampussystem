@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Informasi Akun</title>
+  
+  <style>
+    :root {
+      --font: 'Inter', sans-serif;
+      --text-dark:  #1e2a45;
+      --text-mid:   #3d4f6e;
+      --badge-bg:   rgba(255,255,255,0.45);
+      --badge-text: #2c3e6b;
+      --divider: rgba(100,120,160,0.2);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url(bg.biru.jpeg);
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255,255,255,0.28);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 22px;
+      padding: 36px 36px 32px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 8px 32px rgba(80,100,150,0.13), 0 1.5px 6px rgba(80,100,150,0.07);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .header-icon { flex-shrink: 0; color: var(--text-dark); }
+
+    .card-title { font-size: 22px; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
+    .card-subtitle { font-size: 13px; color: var(--text-mid); margin-top: 4px; line-height: 1.45; }
+
+    .divider { height: 1px; background: var(--divider); margin-bottom: 26px; }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+    .data-row:last-child { margin-bottom: 0; }
+
+    .data-label { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+
+    .data-badge {
+      background: var(--badge-bg);
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 999px;
+      padding: 7px 20px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--badge-text);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wave wave-1"></div>
+  <div class="wave wave-2"></div>
+  <div class="wave wave-3"></div>
+  <div class="wave wave-4"></div>
+
+  <div class="card">
+    <div class="card-header">
+      <svg class="header-icon" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="20" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <path d="M10 46c0-9.941 8.059-18 18-18s18 8.059 18 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="card-title">Informasi akun</div>
+        <div class="card-subtitle">Pastikan informasi Akun anda<br/>selalu terbaru dan aman.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="data-row">
+      <span class="data-label">Username</span>
+      <span class="data-badge">salmaikhti</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Bergabung sejak</span>
+      <span class="data-badge">20maret2024</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Terakhir diperbaharui</span>
+      <span class="data-badge">20maret2024</span>
+    </div>
+  </div>
+
+</body>
+</html>

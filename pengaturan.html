@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pengaturan – Smart Room Campus System</title>
+<style>
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #e8eaf0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: url(bg.biru.jpeg);
+  }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #dde1ea;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+  }
+  .topnav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    color: #1a2540;
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: #1a2540;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 16px; height: 16px; fill: #fff; }
+  .topnav-divider {
+    width: 1px; height: 28px;
+    background: #dde1ea;
+    margin: 0 8px;
+  }
+  .hamburger {
+    background: none; border: none;
+    cursor: pointer; padding: 4px;
+    color: #4a5568;
+  }
+  .topnav-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .notif-btn {
+    background: none; border: none;
+    cursor: pointer; color: #4a5568;
+    position: relative;
+  }
+  .notif-dot {
+    width: 8px; height: 8px;
+    background: #e53e3e;
+    border-radius: 50%;
+    position: absolute;
+    top: 0; right: 0;
+    border: 2px solid #fff;
+  }
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: #4a6fa5;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .user-avatar svg { width: 20px; height: 20px; fill: #fff; }
+  .user-info { line-height: 1.2; }
+  .user-name { font-size: 13px; font-weight: 600; color: #1a2540; }
+  .user-role { font-size: 11px; color: #718096; }
+  .chevron-down { color: #718096; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    margin-top: 56px;
+    flex: 1;
+    min-height: calc(100vh - 56px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    background: #fff;
+    border-right: 1px solid #dde1ea;
+    padding: 24px 0;
+    position: fixed;
+    top: 56px; left: 0; bottom: 0;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 0 20px 20px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a2540;
+    letter-spacing: 1px;
+  }
+  .sidebar-brand span {
+    display: inline-block;
+    border: 2px solid #1a2540;
+    border-radius: 6px;
+    padding: 2px 10px;
+  }
+  .nav-list { list-style: none; }
+  .nav-item a {
+    display: block;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #4a5568;
+    text-decoration: none;
+    border-radius: 0;
+    transition: background 0.15s;
+  }
+  .nav-item a:hover { background: #f0f4f8; color: #1a2540; }
+  .nav-item.active a {
+    background: #1a2540;
+    color: #fff;
+    border-radius: 8px;
+    margin: 0 12px;
+    padding: 10px 12px;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    padding: 32px 36px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .page-title { font-size: 22px; font-weight: 700; color: #1a2540; }
+  .page-sub { font-size: 13px; color: #282e37; margin-top: 2px; }
+  .breadcrumb { font-size: 13px; color: #282e37; display: flex; gap: 6px; align-items: center; }
+  .breadcrumb span { color: #1a2540; font-weight: 500; }
+
+  /* ── CARD ── */
+  .card {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 4px 24px rgba(74,111,165,0.08);
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 10px;
+    padding: 4px;
+    width: fit-content;
+    backdrop-filter: blur(8px);
+  }
+  .tab-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 18px;
+    border: none;
+    background: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #718096;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.6); color: #1a2540; }
+  .tab-btn.active {
+    background: #fff;
+    color: #1a2540;
+    font-weight: 600;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  }
+  .tab-btn svg { width: 16px; height: 16px; }
+
+  /* ── PROFILE CONTENT ── */
+  .profile-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 28px;
+    margin-top: 20px;
+  }
+
+  .section-title { font-size: 15px; font-weight: 700; color: #1a2540; }
+  .section-sub { font-size: 12px; color: #718096; margin-top: 2px; margin-bottom: 20px; }
+
+  /* Form */
+  .form-group {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  .form-label { font-size: 13px; color: #4a5568; font-weight: 500; }
+  .form-input {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(200,210,230,0.6);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #2d3748;
+    width: 100%;
+    outline: none;
+    backdrop-filter: blur(4px);
+    transition: border 0.15s;
+  }
+  .form-input:focus { border-color: #4a6fa5; }
+
+  /* Photo row */
+  .photo-group {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .photo-preview {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: #4a6fa5;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-preview svg { width: 30px; height: 30px; fill: #fff; }
+  .photo-actions { display: flex; flex-direction: column; gap: 4px; }
+  .btn-upload {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.8);
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2d3748;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: fit-content;
+  }
+  .btn-upload:hover { background: #fff; }
+  .btn-upload svg { width: 14px; height: 14px; }
+  .photo-hint { font-size: 11px; color: #a0aec0; }
+
+  /* Save btn */
+  .btn-save {
+    margin-top: 24px;
+    padding: 11px 28px;
+    background: #1a2540;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+  .btn-save:hover { background: #2d3f6e; }
+
+  /* Account info card */
+  .account-card {
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.65);
+    border-radius: 14px;
+    padding: 22px;
+    align-self: flex-start;
+    box-shadow: 0 2px 12px rgba(74,111,165,0.07);
+  }
+  .account-icon {
+    width: 40px; height: 40px;
+    background: rgba(74,111,165,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .account-icon svg { width: 20px; height: 20px; fill: #4a6fa5; }
+  .account-title { font-size: 14px; font-weight: 700; color: #1a2540; }
+  .account-desc { font-size: 12px; color: #718096; margin-top: 4px; line-height: 1.5; }
+  .account-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 16px 0; }
+  .account-meta-label { font-size: 12px; color: #a0aec0; }
+  .account-meta-value { font-size: 13px; font-weight: 600; color: #1a2540; margin-top: 2px; margin-bottom: 14px; }
+
+  /* ── BG BLOBS ── */
+  .bg-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob1 { width: 480px; height: 480px; background: #7b9cc4; top: 60px; right: -100px; }
+  .blob2 { width: 340px; height: 340px; background: #c4b49a; bottom: 40px; right: 160px; }
+  .blob3 { width: 260px; height: 260px; background: #a8b8d8; top: 220px; left: 260px; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #a0aec0;
+    padding: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* make main content above blobs */
+  .layout, .topnav { position: relative; z-index: 1; }
+  .topnav { position: fixed; z-index: 100; }
+  .sidebar { z-index: 90; }
+</style>
+</head>
+<body>
+
+<!-- Background blobs -->
+<div class="bg-blob blob1"></div>
+<div class="bg-blob blob2"></div>
+<div class="bg-blob blob3"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a href="Logo .png" class="topnav-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></svg>
+    </div>
+    Smart Room Campus System
+  </a>
+  <div class="topnav-divider"></div>
+  <button class="hamburger">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="2" y1="5" x2="16" y2="5"/>
+      <line x1="2" y1="9" x2="16" y2="9"/>
+      <line x1="2" y1="13" x2="16" y2="13"/>
+    </svg>
+  </button>
+  <div class="topnav-right">
+    <button class="notif-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <div class="notif-dot"></div>
+    </button>
+    <div class="user-chip">
+      <div class="user-avatar">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name">Salma Ikhti</div>
+        <div class="user-role">Mahasiswa</div>
+      </div>
+      <svg class="chevron-down" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span>Pengaturan</span></div>
+    <ul class="nav-list">
+      <li class="nav-item"> <a href="pengaturan.html" target="Kanan">Profil</a></li>
+      <li class="nav-item"> <a href="pengaturan.html" target="Kanan">Keamanan</a></li>
+      <li class="nav-item"> <a href="lupapasword.html" target="Kanan">Informasi Akun</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">Pengaturan</div>
+        <div class="page-sub">Kelola informasi akun dan sistem Anda</div>
+      </div>
+      <div class="breadcrumb">
+        Beranda
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span>Pengaturan</span>
+      </div>
+    </div>
+
+    <!-- Settings card -->
+    <div class="card">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Profil
+        </button>
+      </div>
+
+      <!-- Profile content -->
+      <div class="profile-content">
+
+        <!-- Left: form -->
+        <div>
+          <div class="section-title">Informasi Profil</div>
+          <div class="section-sub">Kelola informasi profil akun Anda</div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input class="form-input" type="text" value="Salma" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input class="form-input" type="text" value="salma.mhs" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" value="salma123@gmail.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">No. HP</label>
+            <input class="form-input" type="text" value="0812xxxxx" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Peran</label>
+            <input class="form-input" type="text" value="Mahasiswa/Dosen/..." readonly />
+          </div>
+
+          <!-- Photo -->
+          <div class="photo-group">
+            <label class="form-label">Foto Profil</label>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="photo-preview">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+              </div>
+              <div class="photo-actions">
+                <button class="btn-upload">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Ubah Foto
+                </button>
+                <span class="photo-hint">Format JPG, PNG. Maks 10MB</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-save">Simpan Perubahan</button>
+        </div>
+
+        <!-- Right: account info -->
+        <div class="account-card">
+          <div class="account-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 14.2a7.2 7.2 0 0 1-6-3.22c.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08a7.2 7.2 0 0 1-6 3.22z"/></svg>
+          </div>
+          <div class="account-title">Informasi Akun</div>
+          <div class="account-desc">Pastikan informasi akun Anda selalu terbaru dan aman.</div>
+          <div class="account-divider"></div>
+          <div class="account-meta-label">Bergabung sejak</div>
+          <div class="account-meta-value">12 Januari 2024</div>
+          <div class="account-meta-label">Terakhir diperbarui</div>
+          <div class="account-meta-value">20 Mei 2024 10:30 WIB</div>
+        </div>
+
+      </div><!-- /profile-content -->
+
+    </div><!-- /card -->
+
+  </main>
+</div>
+
+<footer>© 2024 Smart Room Campus System. All rights reserved.</footer>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
