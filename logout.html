@@ -3,194 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Konfirmasi Logout - Smarts Room</title>
+  <title>Konfirmasi Logout - Smart Room</title>
 
-  <!-- Mengambil font Plus Jakarta Sans & Playfair Display -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --sidebar-bg: #f3f2ee;
+      --sidebar-bg: #f0f0f0;
       --sidebar-text: #4b5563;
-      --sidebar-active: #7a94b5; 
+      --sidebar-active: #2a3e59; 
       --text-dark: #1e293b;
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.4);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-    
-    body {
-      display: flex; min-height: 100vh; background: var(--sidebar-bg); -webkit-font-smoothing: antialiased;
-    }
+    body { display: flex; min-height: 100vh; background: var(--sidebar-bg); -webkit-font-smoothing: antialiased; }
 
-    /* =========================================
-       SIDEBAR KIRI
-       ========================================= */
+    /* SIDEBAR */
     .sidebar {
       width: 260px; background: var(--sidebar-bg); padding: 30px 20px;
       display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05);
       position: fixed; height: 100vh;
     }
-    .sidebar-brand { font-size: 1.4rem; font-weight: 700; color: var(--text-dark); margin-bottom: 40px; padding-left: 10px; letter-spacing: 1px; }
+    .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 5px; }
+    .sidebar-brand img { width: 45px; }
+    .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
+    .brand-text .subtitle { font-size: 0.65rem; font-weight: 700; color: var(--sidebar-text); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    
     .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-    .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; color: var(--sidebar-text); font-weight: 600; font-size: 0.95rem; border-radius: 50px; transition: all 0.3s ease; cursor: pointer; }
-    .sidebar-menu li.active a { background: var(--sidebar-active); color: #ffffff; }
-    .sidebar-menu li a:hover:not(.active) { background: rgba(0, 0, 0, 0.05); }
-    .sidebar-menu li i { width: 20px; text-align: center; font-size: 1.1rem; }
+    .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; color: var(--sidebar-text); font-weight: 600; font-size: 0.95rem; border-radius: 50px; transition: 0.3s; }
+    .sidebar-menu li.active a { background: var(--sidebar-active); color: #ffffff; box-shadow: 0 4px 10px rgba(42, 62, 89, 0.3); }
+    .sidebar-menu li a:hover:not(.active) { background: rgba(0,0,0,0.05); transform: translateX(5px); }
     .logout-item { margin-top: auto; }
 
-    /* =========================================
-       KONTEN UTAMA
-       ========================================= */
+    /* KONTEN UTAMA */
     .main-content {
       flex: 1; margin-left: 260px; 
-      background: url("bg.biru.jpeg"); /* Pastikan bg.biru.jpeg ada di folder yang sama */
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.25)), url("bg.biru.jpeg");
       background-size: cover; background-position: center; background-attachment: fixed;
-      display: flex; min-height: 100vh;
+      display: flex; min-height: 100vh; align-items: center; justify-content: center;
     }
 
-    /* Lapisan Gelap & Blur di atas Background Biru */
-    .dark-overlay {
-      width: 100%;
-      min-height: 100vh;
-      background: rgba(15, 23, 42, 0.75); /* Latar belakang sangat gelap */
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); /* Efek blur kuat */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    /* =========================================
-       KOTAK KONFIRMASI (Mencolok & Bercahaya)
-       ========================================= */
+    /* KOTAK KONFIRMASI */
     .logout-card {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border: 2px solid #ef4444; /* Border merah terang */
-      border-radius: 24px;
-      padding: 40px 30px;
-      width: 100%; max-width: 400px;
-      text-align: center;
-      box-shadow: 0 0 50px rgba(239, 68, 68, 0.3); /* Cahaya merah menyebar (glow) */
-      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px);
+      border: 2px solid #ef4444; border-radius: 24px;
+      padding: 40px 30px; width: 90%; max-width: 400px;
+      text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .icon-wrapper {
-      width: 80px; height: 80px;
-      background: #ef4444; /* Merah solid mencolok */
-      color: #ffffff;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.2rem;
-      margin: 0 auto 20px auto;
-      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5);
-    }
-    .icon-wrapper i { margin-left: 5px; } /* Offset sedikit agar seimbang */
-
-    .logout-title {
-      font-family: 'Playfair Display', serif;
-      color: #ffffff; font-size: 1.8rem; font-weight: 700;
-      margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      width: 80px; height: 80px; background: #ef4444; color: #ffffff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem; margin: 0 auto 20px auto; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
     }
 
-    .logout-text {
-      color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; font-weight: 500;
-      margin-bottom: 30px; line-height: 1.5;
-    }
+    .logout-title { font-family: 'Playfair Display', serif; color: #ffffff; font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
+    .logout-text { color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; margin-bottom: 30px; }
 
-    .logout-buttons {
-      display: flex; gap: 15px;
-    }
+    .logout-buttons { display: flex; gap: 15px; }
+    .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+    .btn-cancel:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; transition: 0.3s; }
+    .btn-confirm:hover { background: #dc2626; transform: translateY(-2px); }
 
-    /* Tombol Batal (Garis Putih Transparan) */
-    .btn-cancel {
-      flex: 1; background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff;
-      border-radius: 50px; padding: 12px; font-size: 1rem; font-weight: 700;
-      cursor: pointer; transition: 0.3s;
-    }
-    .btn-cancel:hover { 
-      background: rgba(255, 255, 255, 0.25); 
-      border-color: #ffffff; 
-      transform: translateY(-2px); 
-    }
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0.8) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
 
-    /* Tombol Ya (Merah Mencolok) */
-    .btn-confirm {
-      flex: 1; background: #ef4444; border: 2px solid #ef4444;
-      color: #ffffff; border-radius: 50px; padding: 12px; font-size: 1rem; font-weight: 700;
-      text-decoration: none; display: flex; align-items: center; justify-content: center;
-      transition: 0.3s; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
-    }
-    .btn-confirm:hover { 
-      background: #dc2626; 
-      border-color: #dc2626; 
-      transform: translateY(-2px); 
-    }
-
-    /* Animasi Pop In */
-    @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    /* Responsif */
     @media (max-width: 768px) {
       .sidebar { width: 100%; height: auto; position: static; }
-      .main-content { margin-left: 0; min-height: calc(100vh - 60px); }
-      .logout-buttons { flex-direction: column-reverse; } /* Tombol batal pindah ke bawah di HP */
+      .main-content { margin-left: 0; }
+      .logout-buttons { flex-direction: column-reverse; }
     }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-brand">SRCS</div>
+    <div class="sidebar-brand">
+      <img src="Logo.png" alt="Logo">
+      <div class="brand-text">
+        <div class="title">Smart Room</div>
+        <div class="subtitle">Campus System</div>
+      </div>
+    </div>
     <ul class="sidebar-menu">
-      <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="dasboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
       <li><a href="dashboardjadwal.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
       <li><a href="ketersediaan.html"><i class="fa-solid fa-building"></i> Ketersediaan Kelas</a></li>
       <li><a href="pengaturan.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
       <li><a href="peminjaman.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
-      
-      <!-- Menu Logout di-highlight aktif -->
-      <li class="logout-item active">
-        <a href="logout.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-      </li>
+      <li class="logout-item active"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
     </ul>
   </aside>
 
-  <!-- KONTEN UTAMA -->
   <main class="main-content">
-    <!-- Lapisan Gelap dan Blur -->
-    <div class="dark-overlay">
-      
-      <!-- Kotak Konfirmasi -->
-      <div class="logout-card">
-        
-        <div class="icon-wrapper">
-          <i class="fa-solid fa-right-from-bracket"></i>
-        </div>
-        
-        <h2 class="logout-title">Konfirmasi Keluar</h2>
-        <p class="logout-text">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari sistem?</p>
-        
-        <div class="logout-buttons">
-          <!-- Tombol 'Batal' menggunakan history.back() untuk kembali ke menu sebelumnya -->
-          <button onclick="history.back()" class="btn-cancel">Batal</button>
-          
-          <!-- Tombol 'Ya, Logout' mengarahkan kembali ke halaman login utama -->
-          <a href="index.html" class="btn-confirm">Ya, Logout</a>
-        </div>
-
+    <div class="logout-card">
+      <div class="icon-wrapper"><i class="fa-solid fa-right-from-bracket"></i></div>
+      <h2 class="logout-title">Konfirmasi Keluar</h2>
+      <p class="logout-text">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari sistem?</p>
+      <div class="logout-buttons">
+        <button onclick="history.back()" class="btn-cancel">Batal</button>
+        <a href="index.html" class="btn-confirm">Ya, Logout</a>
       </div>
-
     </div>
   </main>
 

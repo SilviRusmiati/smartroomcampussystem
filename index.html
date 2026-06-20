@@ -3,72 +3,178 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smarts Room Campus System</title>
+  <title>Smart Room Campus System</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* =========================================
        CSS VARIABLES UNTUK WARNA & UKURAN
        ========================================= */
     :root {
+      --bg-light: #f0f0f0; 
       --text-main: #1e293b;
       --text-muted: #64748b;
       --accent: #2a3e59; 
-      --dark-overlay: rgba(30, 41, 59, 0.75); 
-      --logo-size: 55px; 
+      --logo-size: 50px; 
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background: #e9e6e2; -webkit-font-smoothing: antialiased; }
+    
+    body { 
+      background: var(--bg-light); 
+      -webkit-font-smoothing: antialiased; 
+      overflow-x: hidden; 
+    }
 
-    /* NAVBAR */
+    /* =========================================
+       NAVBAR / HEADER
+       ========================================= */
     .navbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 15px 60px; background: #e9e6e2;
-      border-bottom: 4px solid var(--accent);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      padding: 15px 60px; 
+      background: var(--bg-light); 
+      border-bottom: 3px solid var(--accent); 
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
       position: sticky; top: 0; z-index: 100;
+      transition: padding 0.3s ease;
     }
+    
     .brand { display: flex; align-items: center; gap: 15px; }
-    .logo-icon img { width: var(--logo-size); height: auto; max-height: 180px; object-fit: contain; }
-    .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
-    .brand-text .subtitle { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; margin-top: 2px; }
-    .nav-text { font-size: 0.85rem; font-weight: 700; color: var(--accent); background: rgba(59, 130, 246, 0.1); padding: 8px 20px; border-radius: 50px; }
+    .logo-icon img { width: var(--logo-size); height: auto; object-fit: contain; }
+    
+    .brand-text { display: flex; flex-direction: column; justify-content: center; }
+    .brand-text .title { 
+      font-family: 'Playfair Display', serif; 
+      font-size: 1.6rem; 
+      font-weight: 700; 
+      color: var(--accent); 
+      line-height: 1; 
+      margin-bottom: 3px;
+    }
+    .brand-text .subtitle { 
+      font-size: 0.8rem; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      letter-spacing: 2px; 
+      color: var(--text-muted); 
+    }
+    
+    .nav-text { 
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      color: var(--accent); 
+      background: rgba(42, 62, 89, 0.08); 
+      padding: 8px 22px; 
+      border-radius: 50px; 
+    }
 
-    /* HERO */
+    /* =========================================
+       HERO SECTION (OVERLAY DIGELAPKAN)
+       ========================================= */
     .hero {
-      height: 85vh; display: flex; align-items: center; justify-content: center;
-      flex-direction: column; text-align: center; padding: 0 20px;
-      background: url("bg.biru.jpeg"); background-size: cover;
-      background-position: center; background-repeat: no-repeat; color: white;
+      height: calc(100vh - 83px); 
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; text-align: center; 
+      padding: 0 24px;
+      /* ========================================================
+         PERUBAHAN: Overlay warna hitam dikurangi dari 0.65 ke 0.2
+         ======================================================== */
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      background-size: cover;
+      background-position: center; 
+      background-repeat: no-repeat; 
+      color: white;
     }
-    .hero .badge { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; animation: fadeInDown 1s ease-out; }
-    .hero .badge::before, .hero .badge::after { content: ""; display: block; width: 40px; height: 1.5px; background: rgba(255, 255, 255, 0.8); }
-    .hero h1 { font-family: 'Playfair Display', serif; font-size: 4.5rem; font-weight: 600; margin-bottom: 40px; animation: fadeInUp 1s ease-out; text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
-    .login-prompt { font-size: 0.9rem; font-weight: 600; color: rgba(255, 255, 255, 0.85); letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; animation: fadeInUp 1.2s ease-out; }
+    
+    .hero .badge { 
+      display: flex; align-items: center; gap: 12px; margin-bottom: 15px; 
+      font-weight: 700; letter-spacing: 3px; text-transform: uppercase; 
+      font-size: 0.85rem;
+      animation: fadeInDown 1s ease-out; 
+    }
+    .hero .badge::before, .hero .badge::after { 
+      content: ""; display: block; width: 30px; height: 1.5px; background: rgba(255, 255, 255, 0.6); 
+    }
+    
+    .hero h1 { 
+      font-family: 'Playfair Display', serif; 
+      font-size: 4rem; 
+      font-weight: 700; 
+      margin-bottom: 30px; 
+      animation: fadeInUp 1s ease-out; 
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
+      line-height: 1.15;
+    }
+    
+    .login-prompt { 
+      font-size: 0.9rem; font-weight: 600; color: rgba(255, 255, 255, 0.9); 
+      letter-spacing: 1.5px; margin-bottom: 30px; text-transform: uppercase; 
+      animation: fadeInUp 1.2s ease-out; 
+    }
 
-    /* MENU BUTTONS */
-    .menu { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; animation: fadeInUp 1.2s ease-out; }
+    /* =========================================
+       MENU BUTTONS (TIDAK TERLALU TRANSPARAN)
+       ========================================= */
+    .menu { 
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; 
+      animation: fadeInUp 1.2s ease-out;
+      width: 100%;
+    }
+    
+    .menu a { text-decoration: none; }
+
     .menu button {
-      padding: 14px 32px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50px;
-      background: var(--dark-overlay); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s;
+      padding: 14px 32px; 
+      border: 1px solid rgba(255, 255, 255, 0.6); /* Garis tepi lebih terlihat */
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.25); /* Background dinaikkan kepekatannya */
+      backdrop-filter: blur(15px); /* Efek blur diperkuat */
+      -webkit-backdrop-filter: blur(15px);
+      color: white; 
+      font-size: 0.95rem; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3); /* Bayangan teks agar lebih terbaca */
     }
-    .menu button:hover { background: #ffffff; color: var(--text-main); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); border-color: #ffffff; }
+    
+    .menu button:hover { 
+      background: #ffffff; 
+      color: var(--accent); 
+      transform: translateY(-4px); 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+      border-color: #ffffff; 
+      text-shadow: none; /* Hilangkan bayangan teks saat di-hover karena background jadi putih */
+    }
 
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    /* Animasi */
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* =========================================
+       MEDIA QUERIES (PENGATURAN KHUSUS LAYAR HP)
+       ========================================= */
     @media (max-width: 768px) {
-      .navbar { flex-direction: column; padding: 20px; gap: 15px; text-align: center; }
-      .brand { flex-direction: column; gap: 10px; }
-      .brand-text .title { font-size: 1.4rem; }
-      .brand-text .subtitle { font-size: 0.8rem; }
-      .hero h1 { font-size: 2.8rem; }
-      .menu { gap: 12px; }
-      .menu button { width: 100%; max-width: 280px; }
+      .navbar { padding: 15px 24px; }
+      .logo-icon img { --logo-size: 42px; }
+      .brand-text .title { font-size: 1.35rem; }
+      .brand-text .subtitle { font-size: 0.7rem; letter-spacing: 1.5px; }
+      .nav-right { display: none; } 
+      
+      .hero { height: calc(100vh - 75px); padding: 0 20px; }
+      .hero h1 { font-size: 2.3rem; margin-bottom: 25px; }
+      .hero .badge { font-size: 0.75rem; margin-bottom: 12px; }
+      .login-prompt { font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 25px; }
+      
+      .menu { flex-direction: column; gap: 12px; align-items: center; }
+      .menu a { width: 100%; max-width: 280px; display: flex; }
+      .menu button { width: 100%; padding: 12px 20px; font-size: 0.9rem; }
     }
   </style>
 </head>
@@ -77,25 +183,27 @@
 
   <header class="navbar">
     <div class="brand">
-      <div class="logo-icon"><img src="Logo.png" alt="Logo SCS"></div>
+      <div class="logo-icon"><img src="Logo.png" alt="Logo SRCS"></div>
       <div class="brand-text">
-        <div class="title">Smarts Room</div>
+        <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
       </div>
     </div>
-    <div class="nav-right"><span class="nav-text">Selamat Datang di Website Kami!</span></div>
+    <div class="nav-right">
+      <span class="nav-text">Selamat Datang di Website Kami!</span>
+    </div>
   </header>
 
   <section class="hero">
     <div class="badge">Selamat Datang di</div>
-    <h1>Smarts Room <br> Campus System</h1>
+    <h1>Smart Room <br> Campus System</h1>
     <p class="login-prompt">Silakan pilih portal akses Anda</p>
 
     <div class="menu">
-      <a href="loginmahasiswa.html" style="text-decoration: none;"><button>Mahasiswa</button></a>
-      <a href="logindosen.html" style="text-decoration: none;"><button>Dosen</button></a>
-      <a href="loginorganisasi.html" style="text-decoration: none;"><button>Organisasi</button></a>
-      <a href="LoginSapras.html" style="text-decoration: none;"><button>Sarana & Prasarana</button></a>
+      <a href="loginmahasiswa.html"><button>Mahasiswa</button></a>
+      <a href="logindosen.html"><button>Dosen</button></a>
+      <a href="loginorganisasi.html"><button>Organisasi</button></a>
+      <a href="LoginSapras.html"><button>Sarana & Prasarana</button></a>
     </div>
   </section>
 

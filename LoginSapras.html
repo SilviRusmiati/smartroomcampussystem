@@ -3,141 +3,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Sarana & Prasarana - Smarts Room</title>
+  <title>Login Sarana & Prasarana - Smart Room</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+    /* =========================================
+       CSS VARIABLES (KONSISTEN DENGAN INDEX)
+       ========================================= */
     :root {
-      --text-main: #1e293b;
+      --bg-light: #f0f0f0; 
+      --text-main: #1e293b; /* Biru Tua Solid (Untuk Teks & Ikon) */
+      --text-muted: #64748b;
       --accent: #2a3e59; 
-      --dark-overlay: rgba(30, 41, 59, 0.75); 
-      --logo-size: 55px; 
+      --logo-size: 50px; 
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.35);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background: #e9e6e2; -webkit-font-smoothing: antialiased; }
+    
+    body { 
+      background: var(--bg-light); 
+      -webkit-font-smoothing: antialiased; 
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-    /* NAVBAR */
+    /* =========================================
+       NAVBAR / HEADER
+       ========================================= */
     .navbar {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 15px 60px; background: #e9e6e2;
-      border-bottom: 4px solid var(--accent);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      padding: 15px 60px; background: var(--bg-light); 
+      border-bottom: 3px solid var(--accent); 
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
       position: sticky; top: 0; z-index: 100;
     }
-    .brand { display: flex; align-items: center; gap: 15px; }
+    
+    .brand { display: flex; align-items: center; gap: 15px; text-decoration: none; }
     .logo-icon img { width: var(--logo-size); height: auto; object-fit: contain; }
-    .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--accent); }
-    .brand-text .subtitle { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+    
+    .brand-text { display: flex; flex-direction: column; justify-content: center; }
+    .brand-text .title { 
+      font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; 
+      color: var(--accent); line-height: 1; margin-bottom: 3px;
+    }
+    .brand-text .subtitle { 
+      font-size: 0.8rem; font-weight: 700; text-transform: uppercase; 
+      letter-spacing: 2px; color: var(--text-muted); 
+    }
 
-    /* LOGIN SECTION */
-    .login-section {
-      min-height: calc(100vh - 80px);
-      display: flex; align-items: center; justify-content: center;
+    .btn-back {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.9rem; font-weight: 700; color: var(--accent); 
+      text-decoration: none; background: rgba(42, 62, 89, 0.08); 
+      padding: 10px 20px; border-radius: 50px; transition: 0.3s;
+    }
+    .btn-back:hover { background: var(--accent); color: #ffffff; }
+
+    /* =========================================
+       AREA LOGIN UTAMA (HERO)
+       ========================================= */
+    .login-wrapper {
+      flex: 1; display: flex; align-items: center; justify-content: center;
       padding: 40px 20px;
-      background: url("bg.biru.jpeg"); 
-      background-size: cover; background-position: center;
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      background-size: cover; background-position: center; background-repeat: no-repeat;
     }
 
+    /* Kotak Glassmorphism */
     .login-card {
-      width: 100%; max-width: 420px;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 24px; padding: 40px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border); border-radius: 24px;
+      padding: 40px 45px; width: 100%; max-width: 450px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    .input-group { margin-bottom: 20px; text-align: left; }
-    .input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
-    .input-group input {
-      width: 100%; padding: 14px 16px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px; color: #ffffff; outline: none;
-    }
+    .login-header { text-align: center; margin-bottom: 30px; }
+    .login-header h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: #ffffff; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .login-header p { color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; font-weight: 500; text-shadow: 0 1px 4px rgba(0,0,0,0.3); }
 
-    /* CSS BARU UNTUK LUPA PASSWORD */
-    .forgot-password {
-      text-align: right;
-      margin-top: -10px;
-      margin-bottom: 25px;
-    }
-    .forgot-password a {
-      color: #ffffff;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .forgot-password a:hover {
-      text-decoration: underline;
+    /* =========================================
+       FORM INPUTS 
+       ========================================= */
+    .input-group { margin-bottom: 20px; }
+    .input-group label { 
+      display: block; font-size: 0.9rem; font-weight: 700; color: #ffffff; 
+      margin-bottom: 8px; letter-spacing: 0.5px; text-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
     
-    .btn-login {
-      width: 100%; background: #333333; color: #ffffff;
-      padding: 14px; border: none; border-radius: 12px;
-      font-weight: 700; cursor: pointer; transition: 0.3s;
+    .input-wrapper {
+      position: relative; 
+      width: 100%;
     }
-    .btn-login:hover { background: #000000; transform: translateY(-2px); }
+    
+    .input-glass {
+      width: 100%; padding: 14px 18px 14px 45px;
+      background: rgba(255, 255, 255, 0.35); 
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 12px;
+      color: var(--text-main); 
+      font-size: 0.95rem; font-weight: 700; outline: none; transition: all 0.3s ease;
+    }
+    
+    .input-glass::placeholder { 
+      color: rgba(30, 41, 59, 0.65); 
+      font-weight: 600; 
+    }
+    
+    .input-glass:focus { 
+      background: rgba(255, 255, 255, 0.6); 
+      border-color: var(--text-main); 
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.15); 
+    }
+    
+    .input-icon { 
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%); 
+      color: var(--text-main); 
+      font-size: 1.1rem; 
+      z-index: 2; 
+    }
 
-    /* CSS BARU UNTUK REGISTRASI */
-    .register-link {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.8);
+    /* =========================================
+       LUPA PASSWORD & TOMBOL
+       ========================================= */
+    .forgot-pass { text-align: right; margin-bottom: 25px; }
+    .forgot-pass a { color: #ffffff; font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .forgot-pass a:hover { color: #93c5fd; text-decoration: underline; }
+
+    .btn-submit {
+      width: 100%; background: var(--accent); color: #ffffff;
+      padding: 15px; border: none; border-radius: 12px; letter-spacing: 1px;
+      font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: 0.3s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
-    .register-link a {
-      color: #ffffff;
-      font-weight: 700;
-      text-decoration: none;
-    }
-    .register-link a:hover {
-      text-decoration: underline;
+    .btn-submit:hover { background: #1e293b; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+
+    /* Area Registrasi */
+    .register-link { text-align: center; margin-top: 25px; font-size: 0.9rem; color: rgba(255, 255, 255, 0.9); font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .register-link a { color: #ffffff; font-weight: 800; text-decoration: none; transition: 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .register-link a:hover { color: #93c5fd; text-decoration: underline; }
+
+    /* Animasi Pop */
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+    /* =========================================
+       MEDIA QUERIES (RESPONSIF HP)
+       ========================================= */
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 24px; }
+      .brand-text .title { font-size: 1.35rem; }
+      .brand-text .subtitle { font-size: 0.7rem; }
+      .btn-back span { display: none; } 
+      .btn-back { padding: 10px 14px; }
+
+      .login-wrapper { padding: 20px 15px; }
+      .login-card { padding: 35px 25px; }
+      .login-header h2 { font-size: 1.8rem; }
     }
   </style>
 </head>
+
 <body>
 
   <header class="navbar">
-    <div class="brand">
-      <div class="logo-icon"><img src="Logo.png" alt="Logo"></div>
+    <a href="index.html" class="brand">
+      <div class="logo-icon"><img src="Logo.png" alt="Logo SRCS"></div>
       <div class="brand-text">
-        <div class="title">Smarts Room</div>
+        <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
       </div>
-    </div>
+    </a>
+    
+    <a href="index.html" class="btn-back">
+      <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
+    </a>
   </header>
 
-  <section class="login-section">
+  <main class="login-wrapper">
     <div class="login-card">
-      <form action="dashboard.html" method="POST">
+      
+      <div class="login-header">
+        <h2>Login Sapras</h2>
+        <p>Silakan masuk menggunakan akun portal Anda</p>
+      </div>
+
+      <form action="dasboard.html" method="GET">
+        
         <div class="input-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Masukkan username">
-        </div>
-       
-        <div class="input-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="•••••">
+          <label>Username</label>
+          <div class="input-wrapper">
+            <i class="fa-regular fa-user input-icon"></i>
+            <input type="text" class="input-glass" placeholder="Masukkan username" required>
+          </div>
         </div>
 
-        <div class="forgot-password">
-          <a href="lupa_password.html">Lupa Password</a>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" class="input-glass" placeholder="Masukkan password Anda" required>
+          </div>
         </div>
-        
-        <button type="submit" class="btn-login">Login Admin Sarana & Prasarana</button>
-        
+
+        <div class="forgot-pass">
+          <a href="lupapassword.html">Lupa Password?</a>
+        </div>
+
+        <button type="submit" class="btn-submit">LOGIN Sapras</button>
+
         <div class="register-link">
-          Belum punya akun? <a href="registrasisarpras.html">Registrasi Sekarang</a>
+          Belum punya akun? <a href="registrasiSapras.html">Registrasi Sekarang</a>
         </div>
+
       </form>
+
     </div>
-  </section>
+  </main>
 
 </body>
-</html>>
+</html>
