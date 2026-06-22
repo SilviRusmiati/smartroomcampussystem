@@ -179,7 +179,7 @@
       .register-section { padding: 20px 15px; }
       .register-card { padding: 35px 25px; }
       .form-title h2 { font-size: 1.8rem; }
-      .input-row { grid-template-columns: 1fr; gap: 0; } /* Form dibuat bersusun ke bawah di HP */
+      .input-row { grid-template-columns: 1fr; gap: 0; } 
     }
   </style>
 </head>
@@ -208,7 +208,7 @@
         <p>Lengkapi data diri Anda untuk membuat akun</p>
       </div>
 
-      <form action="loginmahasiswa.html" method="GET">
+      <form id="formRegistrasi">
 
         <div class="section-label">Data Pribadi</div>
 
@@ -247,12 +247,12 @@
           <div class="select-wrapper">
             <select id="jurusan" name="jurusan" class="input-glass" required>
               <option value="" disabled selected>Pilih Program Studi</option>
-              <option value="ti">Teknik Informatika</option>
-              <option value="si">Sistem Informasi</option>
-              <option value="tk">Teknik Komputer</option>
-              <option value="mn">Manajemen</option>
-              <option value="ak">Akuntansi</option>
-              <option value="hk">Hukum</option>
+              <option value="Teknik Informatika">Teknik Informatika</option>
+              <option value="Sistem Informasi">Sistem Informasi</option>
+              <option value="Teknik Komputer">Teknik Komputer</option>
+              <option value="Manajemen">Manajemen</option>
+              <option value="Akuntansi">Akuntansi</option>
+              <option value="Hukum">Hukum</option>
             </select>
           </div>
         </div>
@@ -262,9 +262,9 @@
           <div class="select-wrapper">
             <select id="fakultas" name="fakultas" class="input-glass" required>
               <option value="" disabled selected>Pilih Fakultas</option>
-              <option value="ftik">Fak. Teknologi Informasi & Komputer</option>
-              <option value="feb">Fak. Ekonomi & Bisnis</option>
-              <option value="fh">Fak. Hukum</option>
+              <option value="Fak. Teknologi Informasi & Komputer">Fak. Teknologi Informasi & Komputer</option>
+              <option value="Fak. Ekonomi & Bisnis">Fak. Ekonomi & Bisnis</option>
+              <option value="Fak. Hukum">Fak. Hukum</option>
             </select>
           </div>
         </div>
@@ -301,7 +301,7 @@
           </label>
         </div>
 
-        <button type="submit" class="btn-register">DAFTAR SEKARANG</button>
+        <button type="submit" id="btnRegister" class="btn-register">DAFTAR SEKARANG</button>
 
         <div class="login-link">
           Sudah punya akun? <a href="loginmahasiswa.html">Login di sini</a>
@@ -311,7 +311,25 @@
     </div>
   </main>
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <script>
+    // 1. Firebase Configuration (Dari yang kamu berikan)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+
+    // 2. Inisialisasi Firebase & Firestore
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     // Fungsi untuk menampilkan/menyembunyikan password
     function togglePass(fieldId, btn) {
       const input = document.getElementById(fieldId);
@@ -328,16 +346,50 @@
       }
     }
 
-    // Validasi sederhana sebelum formulir dikirim
-    document.querySelector('form').addEventListener('submit', function(e) {
+    // 3. Proses Form dan Simpan ke Firebase
+    document.getElementById('formRegistrasi').addEventListener('submit', function(e) {
+      e.preventDefault(); // Mencegah pindah halaman sebelum data tersimpan
+
       const pw  = document.getElementById('password').value;
       const cpw = document.getElementById('confirm_password').value;
       
+      // Validasi Password Cocok
       if (pw !== cpw) {
-        e.preventDefault(); // Mencegah form dikirim
         alert('Gagal: Password dan Konfirmasi Password tidak cocok!');
         document.getElementById('confirm_password').focus();
+        return; 
       }
+
+      // Ubah tombol jadi status loading
+      const btn = document.getElementById('btnRegister');
+      btn.innerText = "MENYIMPAN DATA...";
+      btn.disabled = true;
+
+      // Ambil NIM untuk dijadikan ID Dokumen
+      const nim = document.getElementById('nim').value;
+
+      // Perintah menyimpan ke Firestore (Koleksi "Users")
+      db.collection("Users").doc(nim).set({
+          nim: nim,
+          angkatan: document.getElementById('angkatan').value,
+          nama: document.getElementById('nama').value,
+          email: document.getElementById('email').value,
+          no_hp: document.getElementById('no_hp').value,
+          jurusan: document.getElementById('jurusan').value,
+          fakultas: document.getElementById('fakultas').value,
+          password: pw, 
+          dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+          alert("Registrasi Berhasil! Silakan Login menggunakan akun yang baru didaftarkan.");
+          window.location.href = "loginmahasiswa.html"; // Lempar ke halaman login
+      })
+      .catch((error) => {
+          console.error("Error writing document: ", error);
+          alert("Terjadi kesalahan saat registrasi. Pastikan koneksi internet stabil.");
+          btn.innerText = "DAFTAR SEKARANG";
+          btn.disabled = false;
+      });
     });
   </script>
 

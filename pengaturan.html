@@ -131,13 +131,13 @@
       <div class="profile-content">
         <div>
           <div class="section-title">Data Diri</div>
-          <div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-input" type="text" value="Silvi Rusmiati" /></div>
-          <div class="form-group"><label class="form-label">Username</label><input class="form-input" type="text" value="silvi.mhs" /></div>
-          <div class="form-group"><label class="form-label">NIM</label><input class="form-input" type="text" value="2024xxxxxx" /></div>
-          <div class="form-group"><label class="form-label">Program Studi</label><input class="form-input" type="text" value="Teknik Informatika" /></div>
+          <div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-input" type="text" id="inputNama" /></div>
+          <div class="form-group"><label class="form-label">Username</label><input class="form-input" type="text" id="inputUser" /></div>
+          <div class="form-group"><label class="form-label">NIM</label><input class="form-input" type="text" id="inputNim" readonly /></div>
+          <div class="form-group"><label class="form-label">Program Studi</label><input class="form-input" type="text" id="inputProdi" /></div>
           <div class="form-group"><label class="form-label">Password</label><a href="gantipassword.html" class="btn-link"><i class="fa-solid fa-lock"></i> Ganti Password</a></div>
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" value="silvi@email.com" /></div>
-          <div class="form-group"><label class="form-label">No. WhatsApp</label><input class="form-input" type="text" value="08123456789" /></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="inputEmail" /></div>
+          <div class="form-group"><label class="form-label">No. WhatsApp</label><input class="form-input" type="text" id="inputWa" /></div>
           <button class="btn-save">Simpan Perubahan</button>
         </div>
 
@@ -145,9 +145,7 @@
           <div class="account-title"><i class="fa-solid fa-shield-halved"></i> Informasi Akun</div>
           <div class="account-divider"></div>
           <div class="account-meta-label">Bergabung sejak</div>
-          <div class="account-meta-value">12 Januari 2024</div>
-          <div class="account-meta-label">Terakhir diperbarui</div>
-          <div class="account-meta-value">20 Juni 2026, 09:30 WIB</div>
+          <div class="account-meta-value" id="tglBergabung">-</div>
           <div class="account-meta-label">Status Akun</div>
           <div class="account-meta-value">Aktif (Terverifikasi)</div>
         </div>
@@ -169,9 +167,48 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <script>
     function showLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
     function hideLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const nim = localStorage.getItem("loggedInUserNIM");
+
+    if (nim) {
+        db.collection("Users").doc(nim).get().then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('inputNama').value = data.nama || "";
+                document.getElementById('inputUser').value = data.nama || "";
+                document.getElementById('inputNim').value = data.nim || "";
+                document.getElementById('inputProdi').value = data.jurusan || "";
+                document.getElementById('inputEmail').value = data.email || "";
+                document.getElementById('inputWa').value = data.no_hp || "";
+                if(data.dibuatPada) {
+                   document.getElementById('tglBergabung').innerText = data.dibuatPada.toDate().toLocaleDateString();
+                }
+            }
+        });
+    } else {
+        // FITUR TENDANGAN LOGIN SAYA MATIKAN SEMENTARA AGAR KAMU BISA CEK DESAIN
+        // window.location.href = "loginmahasiswa.html"; 
+        console.log("Belum login, tapi dibiarkan masuk untuk mengecek desain HTML.");
+    }
   </script>
 </body>
 </html>
