@@ -38,6 +38,13 @@
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; align-items: start; }
     .card-title { font-size: 1.1rem; color: #ffffff; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
     
+    /* SCROLLBAR UNTUK TABEL */
+    .table-wrapper { max-height: 280px; overflow-y: auto; padding-right: 5px; }
+    .table-wrapper::-webkit-scrollbar { width: 6px; }
+    .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .table-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); border-radius: 10px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.7); }
+
     .schedule-table { width: 100%; color: #ffffff; border-collapse: separate; border-spacing: 0; }
     .schedule-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
@@ -47,7 +54,7 @@
     .notif-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; color: #ffffff; }
     .notif-item i { color: #f59e0b; margin-top: 4px; }
     .notif-item p { font-size: 0.95rem; }
-  </style>
+</style>
 </head>
 <body>
 
@@ -77,9 +84,13 @@
     <div class="dashboard-grid">
       <section class="glass-card">
         <h3 class="card-title">Ringkasan Ketersediaan</h3>
-        <table class="schedule-table">
-          <tbody id="liveStatusKelas"><tr><td>Memuat data...</td></tr></tbody>
-        </table>
+        
+        <div class="table-wrapper">
+          <table class="schedule-table">
+            <tbody id="liveStatusKelas"><tr><td>Memuat data...</td></tr></tbody>
+          </table>
+        </div>
+        
       </section>
 
       <section class="glass-card">
