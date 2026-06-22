@@ -24,11 +24,7 @@
     body { display: flex; min-height: 100vh; background: var(--sidebar-bg); -webkit-font-smoothing: antialiased; }
 
     /* SIDEBAR */
-    .sidebar {
-      width: 260px; background: var(--sidebar-bg); padding: 30px 20px;
-      display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05);
-      position: fixed; height: 100vh;
-    }
+    .sidebar { width: 260px; background: var(--sidebar-bg); padding: 30px 20px; display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05); position: fixed; height: 100vh; }
     .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 5px; }
     .sidebar-brand img { width: 45px; height: auto; }
     .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
@@ -41,22 +37,13 @@
     .logout-item { margin-top: auto; }
 
     /* KONTEN UTAMA */
-    .main-content {
-      flex: 1; margin-left: 260px; 
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.25)), url("bg.biru.jpeg");
-      background-size: cover; background-position: center; background-attachment: fixed;
-      padding: 40px 60px; display: flex; flex-direction: column; gap: 25px; min-height: 100vh;
-    }
+    .main-content { flex: 1; margin-left: 260px; background: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.25)), url("bg.biru.jpeg"); background-size: cover; background-position: center; background-attachment: fixed; padding: 40px 60px; display: flex; flex-direction: column; gap: 25px; min-height: 100vh; }
 
     .page-header { margin-bottom: 10px; }
     .page-title { font-size: 2.2rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
     .page-sub { font-size: 1rem; color: #ffffff; opacity: 0.9; margin-top: 5px; }
 
-    /* GLASS CARD */
-    .card {
-      background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); 
-      border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
+    .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
 
     .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
     .tab-btn { padding: 10px 20px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; }
@@ -71,7 +58,6 @@
     .form-input:focus { outline: none; background: rgba(255,255,255,0.3); }
     .form-input[readonly] { opacity: 0.7; cursor: not-allowed; }
 
-    .btn-upload { background: rgba(255,255,255,0.2); border: 1px solid var(--glass-border); color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
     .btn-link { color: #ffffff; text-decoration: underline; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
     .btn-save { margin-top: 20px; padding: 12px 30px; background: var(--text-dark); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
     
@@ -81,19 +67,15 @@
     .account-meta-value { font-size: 0.9rem; font-weight: 700; margin-bottom: 10px; }
 
     /* MODAL LOGOUT */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
-    .modal-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border: 2px solid #ef4444; border-radius: 24px; padding: 40px 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.3); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .modal-icon { width: 80px; height: 80px; background: #ef4444; color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px auto; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5); }
-    .modal-title { font-family: 'Playfair Display', serif; color: #ffffff; font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+    .modal-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border: 2px solid #ef4444; border-radius: 24px; padding: 40px 30px; width: 90%; max-width: 400px; text-align: center; }
+    .modal-icon { width: 80px; height: 80px; background: #ef4444; color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px auto; }
+    .modal-title { font-family: 'Playfair Display', serif; color: #ffffff; font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
     .modal-text { color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; margin-bottom: 30px; }
     .modal-actions { display: flex; gap: 15px; }
-    .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-    .btn-cancel:hover { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; }
-    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-    .btn-confirm:hover { background: #dc2626; border-color: #dc2626; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes popIn { 0% { opacity: 0; transform: scale(0.8) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-
+    .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; }
+    .btn-confirm { flex: 1; background: #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+    
     footer { text-align: center; font-size: 12px; color: rgba(255,255,255,0.6); padding: 20px; }
   </style>
 </head>
@@ -120,25 +102,24 @@
   <main class="main-content">
     <div class="page-header">
       <div class="page-title">Pengaturan</div>
-      <div class="page-sub">Kelola informasi profil mahasiswa Anda</div>
+      <div class="page-sub">Kelola informasi profil Anda</div>
     </div>
 
     <div class="card">
       <div class="tabs">
-        <button class="tab-btn active"><i class="fa-solid fa-user"></i> Profil Mahasiswa</button>
+        <button class="tab-btn active"><i class="fa-solid fa-user"></i> Profil</button>
       </div>
 
       <div class="profile-content">
         <div>
           <div class="section-title">Data Diri</div>
           <div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-input" type="text" id="inputNama" /></div>
-          <div class="form-group"><label class="form-label">Username</label><input class="form-input" type="text" id="inputUser" /></div>
-          <div class="form-group"><label class="form-label">NIM</label><input class="form-input" type="text" id="inputNim" readonly /></div>
+          <div class="form-group"><label class="form-label">ID/NIM</label><input class="form-input" type="text" id="inputId" readonly /></div>
           <div class="form-group"><label class="form-label">Program Studi</label><input class="form-input" type="text" id="inputProdi" /></div>
           <div class="form-group"><label class="form-label">Password</label><a href="gantipassword.html" class="btn-link"><i class="fa-solid fa-lock"></i> Ganti Password</a></div>
           <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="inputEmail" /></div>
           <div class="form-group"><label class="form-label">No. WhatsApp</label><input class="form-input" type="text" id="inputWa" /></div>
-          <button class="btn-save">Simpan Perubahan</button>
+          <button class="btn-save" id="btnSimpan">Simpan Perubahan</button>
         </div>
 
         <div class="account-card">
@@ -187,15 +168,26 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // Deteksi apakah Mahasiswa (NIM) atau Dosen (NIDN) yang sedang login
     const nim = localStorage.getItem("loggedInUserNIM");
+    const nidn = localStorage.getItem("loggedInUserNIDN");
+    let collectionName = "";
+    let userId = "";
 
     if (nim) {
-        db.collection("Users").doc(nim).get().then((doc) => {
+        collectionName = "Users";
+        userId = nim;
+    } else if (nidn) {
+        collectionName = "Dosen";
+        userId = nidn;
+    }
+
+    if (collectionName) {
+        db.collection(collectionName).doc(userId).get().then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 document.getElementById('inputNama').value = data.nama || "";
-                document.getElementById('inputUser').value = data.nama || "";
-                document.getElementById('inputNim').value = data.nim || "";
+                document.getElementById('inputId').value = userId;
                 document.getElementById('inputProdi').value = data.jurusan || "";
                 document.getElementById('inputEmail').value = data.email || "";
                 document.getElementById('inputWa').value = data.no_hp || "";
@@ -204,11 +196,21 @@
                 }
             }
         });
-    } else {
-        // FITUR TENDANGAN LOGIN SAYA MATIKAN SEMENTARA AGAR KAMU BISA CEK DESAIN
-        // window.location.href = "loginmahasiswa.html"; 
-        console.log("Belum login, tapi dibiarkan masuk untuk mengecek desain HTML.");
     }
+
+    // Fungsi Simpan Perubahan
+    document.getElementById('btnSimpan').addEventListener('click', function() {
+        if (!collectionName) return;
+        
+        db.collection(collectionName).doc(userId).update({
+            nama: document.getElementById('inputNama').value,
+            jurusan: document.getElementById('inputProdi').value,
+            email: document.getElementById('inputEmail').value,
+            no_hp: document.getElementById('inputWa').value
+        })
+        .then(() => alert("Profil berhasil diperbarui!"))
+        .catch(err => alert("Error: " + err.message));
+    });
   </script>
 </body>
 </html>
