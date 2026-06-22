@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pengaturan – Smart Room Campus System</title>
+  <title>Pengaturan Sapras – Smart Room</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,8 +27,8 @@
     .sidebar { width: 260px; background: var(--sidebar-bg); padding: 30px 20px; display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05); position: fixed; height: 100vh; }
     .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 5px; }
     .sidebar-brand img { width: 45px; height: auto; }
-    .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
-    .brand-text .subtitle { font-size: 0.65rem; font-weight: 700; color: var(--sidebar-text); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    .sidebar-brand .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
+    .sidebar-brand .subtitle { font-size: 0.65rem; font-weight: 700; color: var(--sidebar-text); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
     
     .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; }
     .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; color: var(--sidebar-text); font-weight: 600; font-size: 0.95rem; border-radius: 50px; transition: 0.3s; }
@@ -74,7 +74,8 @@
     .modal-text { color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; margin-bottom: 30px; }
     .modal-actions { display: flex; gap: 15px; }
     .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; }
-    .btn-confirm { flex: 1; background: #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+    .btn-confirm { flex: 1; background: #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s;}
+    .btn-confirm:hover { background: #dc2626; border-color: #dc2626; }
     
     footer { text-align: center; font-size: 12px; color: rgba(255,255,255,0.6); padding: 20px; }
   </style>
@@ -89,12 +90,13 @@
         <div class="subtitle">Campus System</div>
       </div>
     </div>
+    
     <ul class="sidebar-menu">
-      <li><a href="dasboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-      <li><a href="dashboardjadwal.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
-      <li><a href="ketersediaan.html"><i class="fa-solid fa-building"></i> Ketersediaan Kelas</a></li>
-      <li class="active"><a href="pengaturan.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
-      <li><a href="peminjaman.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
+      <li><a href="dashboardsapras.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="jadwalsapras.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
+      <li class="active"><a href="pengaturansapras.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
+      <li><a href="verifikasi.html"><i class="fa-solid fa-file-circle-check"></i> Verifikasi Pengajuan</a></li>
+      <li><a href="datakelas.html"><i class="fa-solid fa-school"></i> Data Kelas</a></li>
       <li class="logout-item"><a onclick="showLogoutModal()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
     </ul>
   </aside>
@@ -102,23 +104,23 @@
   <main class="main-content">
     <div class="page-header">
       <div class="page-title">Pengaturan</div>
-      <div class="page-sub">Kelola informasi profil Anda</div>
+      <div class="page-sub">Kelola informasi profil petugas Sapras Anda</div>
     </div>
 
     <div class="card">
       <div class="tabs">
-        <button class="tab-btn active"><i class="fa-solid fa-user"></i> Profil</button>
+        <button class="tab-btn active"><i class="fa-solid fa-user"></i> Profil Petugas</button>
       </div>
 
       <div class="profile-content">
         <div>
           <div class="section-title">Data Diri</div>
           <div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-input" type="text" id="inputNama" /></div>
-          <div class="form-group"><label class="form-label">ID/NIM</label><input class="form-input" type="text" id="inputId" readonly /></div>
-          <div class="form-group"><label class="form-label">Program Studi</label><input class="form-input" type="text" id="inputProdi" /></div>
-          <div class="form-group"><label class="form-label">Password</label><a href="gantipassword.html" class="btn-link"><i class="fa-solid fa-lock"></i> Ganti Password</a></div>
+          <div class="form-group"><label class="form-label">NIP / ID Pegawai</label><input class="form-input" type="text" id="inputId" readonly /></div>
+          <div class="form-group" style="display:none;"><label class="form-label">Program Studi</label><input class="form-input" type="text" id="inputProdi" /></div>
+          <div class="form-group"><label class="form-label">Password</label><a href="gantipassword_sapras.html" class="btn-link"><i class="fa-solid fa-lock"></i> Ganti Password</a></div>
           <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="inputEmail" /></div>
-          <div class="form-group"><label class="form-label">No. WhatsApp</label><input class="form-input" type="text" id="inputWa" /></div>
+          <div class="form-group"><label class="form-label">No. Handphone</label><input class="form-input" type="text" id="inputWa" /></div>
           <button class="btn-save" id="btnSimpan">Simpan Perubahan</button>
         </div>
 
@@ -143,7 +145,7 @@
       <p class="modal-text">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari sistem?</p>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="hideLogoutModal()">Batal</button>
-        <a href="index.html" class="btn-confirm">Ya, Logout</a>
+        <a href="#" class="btn-confirm" onclick="prosesLogout()">Ya, Logout</a>
       </div>
     </div>
   </div>
@@ -154,6 +156,11 @@
   <script>
     function showLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
     function hideLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
+
+    function prosesLogout() {
+      localStorage.removeItem("loggedInUserSaprasNIP");
+      window.location.href = "../index.html"; 
+    }
 
     const firebaseConfig = {
       apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
@@ -168,48 +175,53 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Deteksi apakah Mahasiswa (NIM) atau Dosen (NIDN) yang sedang login
-    const nim = localStorage.getItem("loggedInUserNIM");
-    const nidn = localStorage.getItem("loggedInUserNIDN");
-    let collectionName = "";
-    let userId = "";
+    const nip = localStorage.getItem("loggedInUserSaprasNIP");
 
-    if (nim) {
-        collectionName = "Users";
-        userId = nim;
-    } else if (nidn) {
-        collectionName = "Dosen";
-        userId = nidn;
-    }
-
-    if (collectionName) {
-        db.collection(collectionName).doc(userId).get().then((doc) => {
+    if (!nip) {
+        alert("Sesi Anda telah habis. Silakan login kembali!");
+        window.location.href = "loginsapras.html";
+    } else {
+        db.collection("Sapras").doc(nip).get().then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 document.getElementById('inputNama').value = data.nama || "";
-                document.getElementById('inputId').value = userId;
-                document.getElementById('inputProdi').value = data.jurusan || "";
+                document.getElementById('inputId').value = nip;
                 document.getElementById('inputEmail').value = data.email || "";
                 document.getElementById('inputWa').value = data.no_hp || "";
                 if(data.dibuatPada) {
                    document.getElementById('tglBergabung').innerText = data.dibuatPada.toDate().toLocaleDateString();
                 }
+            } else {
+                localStorage.removeItem("loggedInUserSaprasNIP");
+                window.location.href = "loginsapras.html";
             }
+        }).catch((error) => {
+             console.error("Gagal memuat profil sapras:", error);
         });
     }
 
-    // Fungsi Simpan Perubahan
     document.getElementById('btnSimpan').addEventListener('click', function() {
-        if (!collectionName) return;
+        if (!nip) return;
         
-        db.collection(collectionName).doc(userId).update({
+        const btn = document.getElementById('btnSimpan');
+        btn.innerText = "Menyimpan...";
+        btn.disabled = true;
+
+        db.collection("Sapras").doc(nip).update({
             nama: document.getElementById('inputNama').value,
-            jurusan: document.getElementById('inputProdi').value,
             email: document.getElementById('inputEmail').value,
             no_hp: document.getElementById('inputWa').value
         })
-        .then(() => alert("Profil berhasil diperbarui!"))
-        .catch(err => alert("Error: " + err.message));
+        .then(() => {
+            alert("Profil petugas berhasil diperbarui!");
+            btn.innerText = "Simpan Perubahan";
+            btn.disabled = false;
+        })
+        .catch(err => {
+            alert("Gagal menyimpan: " + err.message);
+            btn.innerText = "Simpan Perubahan";
+            btn.disabled = false;
+        });
     });
   </script>
 </body>

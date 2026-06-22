@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard - Smart Room</title>
+  <title>Dashboard Petugas Sapras - Smart Room</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,31 +12,32 @@
 
   <style>
     :root {
-      --sidebar-bg: #f0f0f0;
+      --sidebar-bg: #f3f2ee;
       --sidebar-text: #4b5563;
       --sidebar-active: #2a3e59; 
       --text-dark: #1e293b;
       --glass-bg: rgba(255, 255, 255, 0.25);
       --glass-border: rgba(255, 255, 255, 0.4);
+      --white-clean: #efefef; /* Menggunakan kode warna putih kustom penyejuk dari Silvi */
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { display: flex; min-height: 100vh; background: var(--sidebar-bg); -webkit-font-smoothing: antialiased; }
 
-    /* SIDEBAR */
+    /* SIDEBAR KIRI (KONSISTEN) */
     .sidebar {
       width: 260px; background: var(--sidebar-bg); padding: 30px 20px;
       display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05);
       position: fixed; height: 100vh;
     }
     .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 5px; }
-    .sidebar-brand img { width: 45px; }
-    .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
-    .brand-text .subtitle { font-size: 0.65rem; font-weight: 700; color: var(--sidebar-text); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    .sidebar-brand img { width: 45px; height: auto; }
+    .sidebar-brand .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
+    .sidebar-brand .subtitle { font-size: 0.65rem; font-weight: 700; color: var(--sidebar-text); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
 
     .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; }
     .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; color: var(--sidebar-text); font-weight: 600; font-size: 0.95rem; border-radius: 50px; transition: all 0.3s ease; cursor: pointer; }
-    .sidebar-menu li.active a { background: var(--sidebar-active); color: #ffffff; box-shadow: 0 4px 10px rgba(42, 62, 89, 0.3); }
+    .sidebar-menu li.active a { background: var(--sidebar-active); color: var(--white-clean); box-shadow: 0 4px 10px rgba(42, 62, 89, 0.3); }
     .sidebar-menu li a:hover:not(.active) { background: rgba(0, 0, 0, 0.05); transform: translateX(5px); }
     .logout-item { margin-top: auto; }
 
@@ -49,38 +50,41 @@
     }
 
     .header-section { margin-bottom: 10px; }
-    .header-section p { font-size: 1.05rem; font-weight: 600; color: #ffffff; margin-bottom: 5px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-    .header-section h1 { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .header-section p { font-size: 1.05rem; font-weight: 600; color: var(--white-clean); margin-bottom: 5px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+    .header-section h1 { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: var(--white-clean); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
     .glass-card { background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
     
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; align-items: start; }
     
-    .card-title { font-size: 1.1rem; color: #ffffff; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
+    .card-title { font-size: 1.1rem; color: var(--white-clean); font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
 
-    .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0; color: #ffffff; text-align: left; }
+    .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0; color: var(--white-clean); text-align: left; }
     .schedule-table th { padding: 12px; font-weight: 700; font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; }
     .schedule-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
     
     .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #fff; }
     .green { background: #22c55e; }
-    .red { background: #ef4444; }
+    .blue { background: #3b82f6; }
 
-    .notif-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
+    .notif-container { display: flex; flex-direction: column; gap: 12px; }
+    .notif-item { display: flex; align-items: flex-start; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; }
+    .notif-item:last-child { border-bottom: none; padding-bottom: 0; }
     .notif-item i { color: #f59e0b; margin-top: 4px; }
-    .notif-item p { font-size: 0.95rem; color: #ffffff; line-height: 1.4; }
+    .notif-item p { font-size: 0.95rem; color: var(--white-clean); line-height: 1.4; }
 
     /* MODAL LOGOUT */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
     .modal-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border: 2px solid #ef4444; border-radius: 24px; padding: 40px 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.3); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .modal-icon { width: 80px; height: 80px; background: #ef4444; color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px auto; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5); }
-    .modal-title { font-family: 'Playfair Display', serif; color: #ffffff; font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-    .modal-text { color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; margin-bottom: 30px; }
+    .modal-icon { width: 80px; height: 80px; background: #ef4444; color: var(--white-clean); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px auto; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5); }
+    .modal-title { font-family: 'Playfair Display', serif; color: var(--white-clean); font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    .modal-text { color: rgba(239, 239, 239, 0.9); font-size: 0.95rem; margin-bottom: 30px; }
     .modal-actions { display: flex; gap: 15px; }
-    .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+    .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: var(--white-clean); border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
     .btn-cancel:hover { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; }
-    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: var(--white-clean); border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
     .btn-confirm:hover { background: #dc2626; border-color: #dc2626; }
+    
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popIn { 0% { opacity: 0; transform: scale(0.8) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
 
@@ -101,12 +105,13 @@
       </div>
     </div>
     
+    <!-- Penyesuaian: Menggunakan 5 daftar menu terpadu Petugas Sapras -->
     <ul class="sidebar-menu">
-      <li class="active"><a href="dasboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-      <li><a href="dashboardjadwal.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
-      <li><a href="ketersediaan.html"><i class="fa-solid fa-building"></i> Ketersediaan Kelas</a></li>
-      <li><a href="pengaturan.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
-      <li><a href="peminjaman.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
+      <li class="active"><a href="dashboardsapras.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="jadwalsapras.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
+      <li><a href="pengaturansapras.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
+      <li><a href="verifikasi.html"><i class="fa-solid fa-clipboard-check"></i> Verifikasi Pengajuan</a></li>
+      <li><a href="datakelas.html"><i class="fa-solid fa-school"></i> Data Kelas</a></li>
       <li class="logout-item"><a onclick="showLogoutModal()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
     </ul>
   </aside>
@@ -114,44 +119,41 @@
   <main class="main-content">
     <div class="header-section">
       <p id="greetingText">Selamat datang</p>
-      <h1>Dashboard</h1>
+      <h1>Dashboard Sapras</h1>
     </div>
 
     <div class="dashboard-grid">
+      <!-- PANEL KIRI: MONITORING MASTER RUANG KELAS -->
       <section class="glass-card">
-        <h3 class="card-title">Ringkasan Ketersediaan</h3>
+        <h3 class="card-title"><i class="fa-solid fa-door-open"></i> Ruangan Terdaftar</h3>
         <table class="schedule-table">
-          <thead><tr><th>Kelas</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Kelas A</td><td><span class="badge green">Tersedia</span></td></tr>
-            <tr><td>Kelas B</td><td><span class="badge green">Tersedia</span></td></tr>
-            <tr><td>Lab. Komputer</td><td><span class="badge red">Penuh</span></td></tr>
-            <tr><td>Lab. Biologi</td><td><span class="badge red">Penuh</span></td></tr>
+          <thead><tr><th>Nama Kelas</th><th>Lokasi</th><th>Status</th></tr></thead>
+          <tbody id="liveStatusKelas">
+            <tr><td colspan="3" style="text-align: center; padding: 20px;">Memuat data ruangan...</td></tr>
           </tbody>
         </table>
       </section>
 
+      <!-- PANEL KANAN: MONITORING INVENTARIS PROPERTI -->
       <section class="glass-card">
-        <h3 class="card-title">Jadwal Mendatang</h3>
+        <h3 class="card-title"><i class="fa-solid fa-couch"></i> Stok Master Properti</h3>
         <table class="schedule-table">
-          <thead><tr><th>Tanggal</th><th>Waktu</th><th>Kegiatan</th></tr></thead>
-          <tbody>
-            <tr><td>20 Jun</td><td>08.00</td><td>Rapat Evaluasi</td></tr>
-            <tr><td>21 Jun</td><td>13.00</td><td>Praktikum</td></tr>
+          <thead><tr><th>Nama Properti</th><th>Stok Total</th><th>Tersedia</th></tr></thead>
+          <tbody id="liveStokProperti">
+            <tr><td colspan="3" style="text-align: center; padding: 20px;">Memuat data properti...</td></tr>
           </tbody>
         </table>
       </section>
     </div>
 
+    <!-- PANEL BAWAH: NOTIFIKASI ALERTI ANTREAN VERIFIKASI BERKAS -->
     <section class="glass-card">
-      <h3 class="card-title">Notifikasi Penting</h3>
-      <div class="notif-item">
-        <i class="fa-solid fa-bell"></i>
-        <p>Penggunaan <strong>Kelas A</strong> akan dimulai dalam 30 menit.</p>
-      </div>
-      <div class="notif-item">
-        <i class="fa-solid fa-bell"></i>
-        <p>Jadwal praktikum di <strong>Lab. Biologi</strong> dimulai pukul 10.00.</p>
+      <h3 class="card-title"><i class="fa-solid fa-bell"></i> Antrean Berkas Masuk (Menunggu Verifikasi)</h3>
+      <div class="notif-container" id="liveNotifAntrean">
+        <div class="notif-item">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <p>Memeriksa berkas masuk...</p>
+        </div>
       </div>
     </section>
   </main>
@@ -163,7 +165,7 @@
       <p class="modal-text">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari sistem?</p>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="hideLogoutModal()">Batal</button>
-        <a href="index.html" class="btn-confirm">Ya, Logout</a>
+        <a href="#" class="btn-confirm" onclick="prosesLogout()">Ya, Logout</a>
       </div>
     </div>
   </div>
@@ -173,6 +175,7 @@
     function hideLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
   </script>
 
+  <!-- LOAD FIREBASE CORE & FIRESTORE COMPAT -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -190,18 +193,89 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const nim = localStorage.getItem("loggedInUserNIM");
-    const nidn = localStorage.getItem("loggedInUserNIDN");
+    // Mengunci Keamanan Akses Token Sesi NIP Sapras
+    const saprasNip = localStorage.getItem("loggedInUserSaprasNIP");
 
-    if (nim) {
-        db.collection("Users").doc(nim).get().then((doc) => {
-            if (doc.exists) document.getElementById('greetingText').innerText = "Selamat datang, " + doc.data().nama;
-        });
-    } else if (nidn) {
-        db.collection("Dosen").doc(nidn).get().then((doc) => {
-            if (doc.exists) document.getElementById('greetingText').innerText = "Selamat datang, " + doc.data().nama;
+    if (!saprasNip) {
+        alert("Sesi habis, silakan login kembali!");
+        window.location.href = "loginsapras.html";
+    } else {
+        // Ambil Nama Asli Petugas Sapras dari Database
+        db.collection("Sapras").doc(saprasNip).get().then((doc) => {
+            if (doc.exists) {
+                document.getElementById('greetingText').innerText = "Selamat datang, " + doc.data().nama;
+            }
         });
     }
+
+    function prosesLogout() {
+      localStorage.removeItem("loggedInUserSaprasNIP");
+      window.location.href = "../index.html"; 
+    }
+
+    // 1. SNAPSHOT REAL-TIME: MONITORING DAFTAR RUANGAN KELAS
+    db.collection("Kelas").limit(5).onSnapshot((snapshot) => {
+        if(snapshot.empty) {
+            document.getElementById('liveStatusKelas').innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada kelas terdaftar.</td></tr>`;
+            return;
+        }
+        let html = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            html += `<tr>
+                <td><b>${data.namaKelas || data.idKelas}</b></td>
+                <td>${data.lokasi || '-'}</td>
+                <td><span class="badge green">${data.status || 'Tersedia'}</span></td>
+            </tr>`;
+        });
+        document.getElementById('liveStatusKelas').innerHTML = html;
+    });
+
+    // 2. SNAPSHOT REAL-TIME: MONITORING TOTAL & SISA STOK PROPERTI
+    db.collection("Properti").limit(5).onSnapshot((snapshot) => {
+        if(snapshot.empty) {
+            document.getElementById('liveStokProperti').innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada properti terdaftar.</td></tr>`;
+            return;
+        }
+        let html = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const total = data.jumlahTotal || 0;
+            const dipinjam = data.jumlahDipinjam || 0;
+            const sisaTersedia = total - dipinjam; // Kalkulasi live otomatis sesuai keinginan Silvi
+            
+            html += `<tr>
+                <td><b>${data.namaProperti}</b></td>
+                <td><span class="badge blue">${total} Unit</span></td>
+                <td><span class="badge green">${sisaTersedia} Unit</span></td>
+            </tr>`;
+        });
+        document.getElementById('liveStokProperti').innerHTML = html;
+    });
+
+    // 3. SNAPSHOT REAL-TIME: FILTER PENGURUTAN NOTIFIKASI ANTREAN BERKAS YANG BELUM DIVERIFIKASI
+    db.collection("Peminjaman").where("status", "==", "Menunggu").orderBy("dibuatPada", "desc").limit(3).onSnapshot((snapshot) => {
+        if(snapshot.empty) {
+            document.getElementById('liveNotifAntrean').innerHTML = `
+              <div class="notif-item">
+                <i class="fa-solid fa-circle-check" style="color: #22c55e;"></i>
+                <p>Bersih! Tidak ada antrean pengajuan peminjaman baru saat ini.</p>
+              </div>`;
+            return;
+        }
+        let html = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const pemohon = data.namaPemohon || data.nama || "Seseorang";
+            const targetRuang = data.namaKelas || "Ruang Kelas";
+            html += `
+              <div class="notif-item">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p>Pengajuan baru dari <strong>${pemohon}</strong> meminta izin penggunaan <strong>${targetRuang}</strong>. Segera tinjau berkas di menu verifikasi!</p>
+              </div>`;
+        });
+        document.getElementById('liveNotifAntrean').innerHTML = html;
+    });
   </script>
 </body>
 </html>

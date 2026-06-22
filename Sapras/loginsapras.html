@@ -73,7 +73,8 @@
     .login-wrapper {
       flex: 1; display: flex; align-items: center; justify-content: center;
       padding: 40px 20px;
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      /* Disesuaikan: Ditambahkan ../ agar gambar terbaca dari luar folder */
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("../bg.biru.jpeg");
       background-size: cover; background-position: center; background-repeat: no-repeat;
     }
 
@@ -174,15 +175,17 @@
 <body>
 
   <header class="navbar">
-    <a href="index.html" class="brand">
-      <div class="logo-icon"><img src="Logo.png" alt="Logo SRCS"></div>
+    <!-- Disesuaikan: Ditambahkan ../ agar kembali ke halaman index utama -->
+    <a href="../index.html" class="brand">
+      <div class="logo-icon"><img src="../Logo.png" alt="Logo SRCS"></div>
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
       </div>
     </a>
     
-    <a href="index.html" class="btn-back">
+    <!-- Disesuaikan: Ditambahkan ../ agar kembali ke halaman index utama -->
+    <a href="../index.html" class="btn-back">
       <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
     </a>
   </header>
@@ -195,13 +198,15 @@
         <p>Silakan masuk menggunakan akun portal Anda</p>
       </div>
 
-      <form action="dasboard.html" method="GET">
+      <!-- Penyesuaian: Mengganti action ke dashboardsapras.html dan memberikan ID Form -->
+      <form id="formLoginSapras">
         
         <div class="input-group">
-          <label>Username</label>
+          <!-- Penyesuaian teks label agar mencakup Email dan NIP sesuai logika database -->
+          <label>Email atau NIP</label>
           <div class="input-wrapper">
             <i class="fa-regular fa-user input-icon"></i>
-            <input type="text" class="input-glass" placeholder="Masukkan username" required>
+            <input type="text" id="loginUser" class="input-glass" placeholder="Masukkan Email atau NIP" required>
           </div>
         </div>
 
@@ -209,15 +214,16 @@
           <label>Password</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" class="input-glass" placeholder="Masukkan password Anda" required>
+            <input type="password" id="loginPassword" class="input-glass" placeholder="Masukkan password Anda" required>
           </div>
         </div>
 
         <div class="forgot-pass">
-          <a href="lupapassword.html">Lupa Password?</a>
+          <!-- Penyesuaian link ke halaman lupa password khusus sapras -->
+          <a href="lupapasword_sapras.html">Lupa Password?</a>
         </div>
 
-        <button type="submit" class="btn-submit">LOGIN Sapras</button>
+        <button type="submit" id="btnLogin" class="btn-submit">LOGIN Sapras</button>
 
         <div class="register-link">
           Belum punya akun? <a href="registrasisapras.html">Registrasi Sekarang</a>
@@ -228,5 +234,87 @@
     </div>
   </main>
 
+  <!-- SDK FIREBASE COMPAT -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // 1. Konfigurasi Database Firebase proyekmu
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 2. Fungsi intercept submit form untuk verifikasi data Sapras
+    document.getElementById('formLoginSapras').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('btnLogin');
+      btn.innerText = "MEMERIKSA DATA...";
+      btn.disabled = true;
+
+      const userInput = document.getElementById('loginUser').value.trim();
+      const passInput = document.getElementById('loginPassword').value;
+
+      // Sub-fungsi untuk memproses sesi setelah user tervalidasi benar
+      function prosesLoginSukses(dataSapras, docId) {
+          if (dataSapras.password === passInput) {
+              // Menyimpan ID NIP Petugas ke memori browser
+              localStorage.setItem("loggedInUserSaprasNIP", docId);
+              
+              alert("Login Berhasil! Selamat datang petugas, " + dataSapras.nama);
+              window.location.href = "dashboardsapras.html";
+          } else {
+              alert("Login Gagal! Password salah.");
+              btn.innerText = "LOGIN Sapras";
+              btn.disabled = false;
+          }
+      }
+
+      // Deteksi otomatis format input: Jika memakai tanda "@", deteksi lewat field Email
+      if (userInput.includes('@')) {
+          db.collection("Sapras").where("email", "==", userInput).get().then((querySnapshot) => {
+              if (!querySnapshot.empty) {
+                  const doc = querySnapshot.docs[0];
+                  prosesLoginSukses(doc.data(), doc.id);
+              } else {
+                  alert("Login Gagal! Akun dengan email tersebut tidak ditemukan.");
+                  btn.innerText = "LOGIN Sapras";
+                  btn.disabled = false;
+              }
+          }).catch((error) => {
+              console.error("Error query email:", error);
+              alert("Terjadi kendala sistem saat memproses pencarian akun.");
+              btn.innerText = "LOGIN Sapras";
+              btn.disabled = false;
+          });
+      } 
+      // Jika input biasa, deteksi langsung tembak ID dokumen (NIP)
+      else {
+          db.collection("Sapras").doc(userInput).get().then((doc) => {
+              if (doc.exists) {
+                  prosesLoginSukses(doc.data(), doc.id);
+              } else {
+                  alert("Login Gagal! Akun dengan NIP tersebut tidak terdaftar.");
+                  btn.innerText = "LOGIN Sapras";
+                  btn.disabled = false;
+              }
+          }).catch((error) => {
+              console.error("Error get NIP:", error);
+              alert("Terjadi kendala sistem saat memverifikasi akun petugas.");
+              btn.innerText = "LOGIN Sapras";
+              btn.disabled = false;
+          });
+      }
+    });
+  </script>
 </body>
 </html>

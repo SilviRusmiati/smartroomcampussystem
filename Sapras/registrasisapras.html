@@ -125,7 +125,7 @@
       color: var(--text-main); pointer-events: none;
     }
     
-    .password-wrapper { position: relative; }
+    .password-wrapper { position: relative; width: 100%; }
     .password-wrapper input { padding-right: 45px; }
     .toggle-password {
       position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
@@ -177,14 +177,14 @@
 <body>
 
   <header class="navbar">
-    <a href="index.html" class="brand">
+    <a href="../index.html" class="brand">
       <div class="logo-icon"><img src="Logo.png" alt="Logo"></div>
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
       </div>
     </a>
-    <a href="LoginSapras.html" class="btn-back">
+    <a href="loginsapras.html" class="btn-back">
       <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
     </a>
   </header>
@@ -196,7 +196,7 @@
         <p>Daftarkan akun Sarana & Prasarana kampus</p>
       </div>
 
-      <form action="LoginSapras.html" method="GET">
+      <form id="formRegistrasiSapras">
         
         <div class="section-label">Identitas Petugas</div>
         <div class="input-row">
@@ -218,45 +218,6 @@
         <div class="input-group">
           <label for="email">Email Aktif</label>
           <input type="email" id="email" name="email" class="input-glass" placeholder="nama@email.com" required>
-        </div>
-
-        <hr class="divider">
-        <div class="section-label">Data Unit Sapras</div>
-
-        <div class="input-group">
-          <label for="unit">Nama Unit / Bagian</label>
-          <input type="text" id="unit" name="unit" class="input-glass" placeholder="Contoh: Unit Gedung A" required>
-        </div>
-
-        <div class="input-group">
-          <label for="jenis">Jenis Sapras</label>
-          <div class="select-wrapper">
-            <select id="jenis" name="jenis" class="input-glass" required>
-              <option value="" disabled selected>Pilih Jenis</option>
-              <option value="ruang_kelas">Ruang Kelas</option>
-              <option value="laboratorium">Laboratorium</option>
-              <option value="aula">Aula / Gedung Pertemuan</option>
-              <option value="lapangan">Lapangan / Area Olahraga</option>
-              <option value="perpustakaan">Perpustakaan</option>
-              <option value="kantin">Kantin</option>
-              <option value="lainnya">Lainnya</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <label for="lokasi">Lokasi / Gedung</label>
-          <input type="text" id="lokasi" name="lokasi" class="input-glass" placeholder="Contoh: Gedung B Lantai 2" required>
-        </div>
-
-        <div class="input-group">
-          <label for="kapasitas">Kapasitas (Orang)</label>
-          <input type="number" id="kapasitas" name="kapasitas" class="input-glass" placeholder="Contoh: 40" min="1" required>
-        </div>
-
-        <div class="input-group">
-          <label for="keterangan">Keterangan Tambahan</label>
-          <textarea id="keterangan" name="keterangan" class="textarea-glass" placeholder="Fasilitas tersedia, kondisi ruangan, dll."></textarea>
         </div>
 
         <hr class="divider">
@@ -283,15 +244,18 @@
           <label for="terms">Saya menyetujui <a href="#">Syarat & Ketentuan</a> serta <a href="#">Kebijakan Privasi</a> Smart Room Campus System.</label>
         </div>
 
-        <button type="submit" class="btn-register">DAFTAR SEKARANG</button>
+        <button type="submit" id="btnRegister" class="btn-register">DAFTAR SEKARANG</button>
 
         <div class="login-link">
-          Sudah punya akun? <a href="LoginSapras.html">Login di sini</a>
+          Sudah punya akun? <a href="loginsapras.html">Login di sini</a>
         </div>
 
       </form>
     </div>
   </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <script>
     function togglePass(id, btn) {
@@ -300,13 +264,62 @@
       input.type = input.type === 'password' ? 'text' : 'password';
       icon.className = input.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
     }
-    document.querySelector('form').addEventListener('submit', function(e) {
+
+    // Konfigurasi Akun Firebase milikmu
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.getElementById('formRegistrasiSapras').addEventListener('submit', function(e) {
+      e.preventDefault();
+
       const pw = document.getElementById('password').value;
       const cpw = document.getElementById('confirm_password').value;
+
       if (pw !== cpw) {
-        e.preventDefault();
-        alert('Password dan Konfirmasi Password tidak cocok!');
+        alert('Gagal: Password dan Konfirmasi Password tidak cocok!');
+        document.getElementById('confirm_password').focus();
+        return;
       }
+      if (pw.length < 8) {
+        alert('Gagal: Password minimal harus 8 karakter!');
+        return;
+      }
+
+      const btn = document.getElementById('btnRegister');
+      btn.innerText = "MENYIMPAN DATA...";
+      btn.disabled = true;
+
+      const nip = document.getElementById('nip').value.trim();
+
+      // Menyimpan data murni identitas akun ke koleksi database Sapras
+      db.collection("Sapras").doc(nip).set({
+          nip: nip,
+          no_hp: document.getElementById('no_hp').value,
+          nama: document.getElementById('nama').value,
+          email: document.getElementById('email').value.trim(),
+          password: pw,
+          dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+          alert("Registrasi Sapras Berhasil! Silakan Login menggunakan NIP akun petugas Anda.");
+          window.location.href = "loginsapras.html";
+      })
+      .catch((error) => {
+          console.error("Error saving sapras:", error);
+          alert("Terjadi kendala sistem saat menyimpan data petugas.");
+          btn.innerText = "DAFTAR SEKARANG";
+          btn.disabled = false;
+      });
     });
   </script>
 </body>

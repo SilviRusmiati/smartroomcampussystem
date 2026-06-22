@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kelola Data Fasilitas – Smart Room</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --sidebar-bg: #f3f2ee;
+      --sidebar-text: #4b5563;
+      --sidebar-active: #2a3e59; 
+      --text-dark: #1e293b;
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { display: flex; min-height: 100vh; background: var(--sidebar-bg); -webkit-font-smoothing: antialiased; }
+
+    /* SIDEBAR */
+    .sidebar { width: 260px; background: var(--sidebar-bg); padding: 30px 20px; display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05); position: fixed; height: 100vh; }
+    .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 5px; }
+    .sidebar-brand img { width: 45px; height: auto; }
+    .sidebar-brand .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
+    .sidebar-brand .subtitle { font-size: 0.65rem; font-weight: 700; color: var(--sidebar-text); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    
+    .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; color: var(--sidebar-text); font-weight: 600; font-size: 0.95rem; border-radius: 50px; transition: 0.3s; }
+    .sidebar-menu li.active a { background: var(--sidebar-active); color: #ffffff; box-shadow: 0 4px 10px rgba(42, 62, 89, 0.3); }
+    .sidebar-menu li a:hover:not(.active) { background: rgba(0,0,0,0.05); transform: translateX(5px); }
+    .logout-item { margin-top: auto; }
+
+    /* KONTEN UTAMA */
+    .main-content { flex: 1; margin-left: 260px; background: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.25)), url("bg.biru.jpeg"); background-size: cover; background-position: center; background-attachment: fixed; padding: 40px 60px; display: flex; flex-direction: column; gap: 25px; min-height: 100vh; }
+
+    .page-header { margin-bottom: 10px; }
+    .page-title { font-size: 2.2rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .page-sub { font-size: 1rem; color: #ffffff; opacity: 0.9; margin-top: 5px; }
+
+    .card { background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+
+    .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+    .tab-btn { padding: 12px 25px; border: none; background: rgba(255,255,255,0.15); border: 1px solid var(--glass-border); color: white; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+    .tab-btn.active { background: #ffffff; color: var(--text-dark); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+    .split-content { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
+    .section-title { font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; }
+    
+    .form-container { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+    .form-group { display: flex; flex-direction: column; margin-bottom: 16px; gap: 8px; }
+    .form-label { font-size: 0.9rem; color: #ffffff; font-weight: 600; }
+    .form-input { width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.2); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 0.95rem; outline: none; }
+    .form-input:focus { background: rgba(255,255,255,0.3); border-color: #fff; }
+    .form-input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .btn-save { width: 100%; padding: 14px; background: var(--text-dark); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    .btn-save:hover { background: #0f172a; transform: translateY(-2px); }
+    
+    /* TABLE STYLE */
+    .table-container { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: separate; border-spacing: 0; color: #ffffff; text-align: left; }
+    .data-table th { padding: 15px; font-weight: 700; font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.2); }
+    .data-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; }
+    
+    .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #fff; display: inline-block; }
+    .badge-green { background: #22c55e; }
+    .badge-blue { background: #3b82f6; }
+    .badge-orange { background: #f59e0b; }
+
+    .btn-delete { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+    .btn-delete:hover { color: #f87171; transform: scale(1.1); }
+
+    /* MODAL LOGOUT */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+    .modal-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border: 2px solid #ef4444; border-radius: 24px; padding: 40px 30px; width: 90%; max-width: 400px; text-align: center; }
+    .modal-icon { width: 80px; height: 80px; background: #ef4444; color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px auto; }
+    .modal-title { font-family: 'Playfair Display', serif; color: #ffffff; font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
+    .modal-text { color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; margin-bottom: 30px; }
+    .modal-actions { display: flex; gap: 15px; }
+    .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; }
+    .btn-confirm { flex: 1; background: #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    
+    footer { text-align: center; font-size: 12px; color: rgba(255,255,255,0.6); padding: 20px; margin-top: auto; }
+
+    @media(max-width: 992px) {
+      .split-content { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="Logo.png" alt="Logo">
+      <div class="brand-text">
+        <div class="title">Smart Room</div>
+        <div class="subtitle">Campus System</div>
+      </div>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="dashboardsapras.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="jadwalsapras.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
+      <li><a href="pengaturansapras.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
+      <li><a href="verifikasi.html"><i class="fa-solid fa-file-circle-check"></i> Verifikasi Pengajuan</a></li>
+      <li class="active"><a href="datakelas.html"><i class="fa-solid fa-school"></i> Data Kelas</a></li>
+      <li class="logout-item"><a onclick="showLogoutModal()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-title">Inventaris Kampus</div>
+      <div class="page-sub">Input dan kelola master data ruang kelas serta properti pendukung pendidkan</div>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" id="tabKelasBtn" onclick="switchTab('kelas')"><i class="fa-solid fa-door-open"></i> Kelola Kelas</button>
+        <button class="tab-btn" id="tabPropertiBtn" onclick="switchTab('properti')"><i class="fa-solid fa-couch"></i> Kelola Properti</button>
+      </div>
+
+      <div class="split-content" id="contentKelas">
+        <div class="form-container">
+          <div class="section-title">Tambah Kelas Baru</div>
+          <form id="formKelas">
+            <div class="form-group">
+              <label class="form-label">Kode / ID Kelas</label>
+              <input type="text" id="idKelas" class="form-input" placeholder="Contoh: R_301" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nama Ruangan</label>
+              <input type="text" id="namaKelas" class="form-input" placeholder="Contoh: Ruang Kelas A" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lokasi / Gedung</label>
+              <input type="text" id="lokasiKelas" class="form-input" placeholder="Contoh: Gedung B Lantai 2" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kapasitas (Orang)</label>
+              <input type="number" id="kapasitasKelas" class="form-input" placeholder="Contoh: 40" min="1" required />
+            </div>
+            <button type="submit" class="btn-save" id="btnSimpanKelas">Simpan Data Kelas</button>
+          </form>
+        </div>
+
+        <div class="table-container">
+          <div class="section-title">Daftar Ruangan Kelas</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>ID</th><th>Nama Kelas</th><th>Lokasi</th><th>Kapasitas</th><th>Status</th><th>Aksi</th></tr>
+            </thead>
+            <tbody id="tbodyKelas">
+              </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="split-content" id="contentProperti" style="display: none;">
+        <div class="form-container">
+          <div class="section-title">Tambah Properti Baru</div>
+          <form id="formProperti">
+            <div class="form-group">
+              <label class="form-label">Kode / ID Barang</label>
+              <input type="text" id="idProperti" class="form-input" placeholder="Contoh: PROP_PRJ" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nama Properti / Barang</label>
+              <input type="text" id="namaProperti" class="form-input" placeholder="Contoh: Proyektor Epson" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jumlah Stok Total</label>
+              <input type="number" id="totalProperti" class="form-input" placeholder="Contoh: 50" min="1" required />
+            </div>
+            <button type="submit" class="btn-save" id="btnSimpanProperti">Simpan Properti</button>
+          </form>
+        </div>
+
+        <div class="table-container">
+          <div class="section-title">Kalkulasi Inventaris Properti</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>ID Barang</th><th>Nama Properti</th><th>Total Stok</th><th>Dipinjam</th><th>Tersedia</th><th>Aksi</th></tr>
+            </thead>
+            <tbody id="tbodyProperti">
+              </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>© 2024 Smart Room Campus System. All rights reserved.</footer>
+  </main>
+
+  <div id="logoutModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+      <h2 class="modal-title">Konfirmasi Keluar</h2>
+      <p class="modal-text">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari sistem?</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="hideLogoutModal()">Batal</button>
+        <a href="#" class="btn-confirm" onclick="prosesLogout()">Ya, Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    function showLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
+    function hideLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
+    function prosesLogout() {
+      localStorage.removeItem("loggedInUserSaprasNIP");
+      window.location.href = "../index.html"; 
+    }
+
+    // Fungsi Switch Tab Cantik Tanpa Reload halaman
+    function switchTab(type) {
+        if(type === 'kelas') {
+            document.getElementById('tabKelasBtn').classList.add('active');
+            document.getElementById('tabPropertiBtn').classList.remove('active');
+            document.getElementById('contentKelas').style.display = 'grid';
+            document.getElementById('contentProperti').style.display = 'none';
+        } else {
+            document.getElementById('tabKelasBtn').classList.remove('active');
+            document.getElementById('tabPropertiBtn').classList.add('active');
+            document.getElementById('contentKelas').style.display = 'none';
+            document.getElementById('contentProperti').style.display = 'grid';
+        }
+    }
+
+    // Firebase Initialization
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const nip = localStorage.getItem("loggedInUserSaprasNIP");
+    if (!nip) {
+        alert("Akses ditolak. Silakan login terlebih dahulu!");
+        window.location.href = "loginsapras.html";
+    }
+
+    /* =======================================================
+       LOGIKA CRUD 1: MASTER DATA KELAS (KOLEKSI: Kelas)
+       ======================================================= */
+    document.getElementById('formKelas').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('idKelas').value.trim();
+        const btn = document.getElementById('btnSimpanKelas');
+        btn.disabled = true;
+
+        db.collection("Kelas").doc(id).set({
+            idKelas: id,
+            namaKelas: document.getElementById('namaKelas').value,
+            lokasi: document.getElementById('lokasiKelas').value,
+            kapasitas: parseInt(document.getElementById('kapasitasKelas').value),
+            status: "Tersedia"
+        }).then(() => {
+            alert("Data kelas berhasil disimpan!");
+            document.getElementById('formKelas').reset();
+            btn.disabled = false;
+        }).catch(err => { alert("Gagal: " + err.message); btn.disabled = false; });
+    });
+
+    // Real-time Listener Daftar Kelas (Muncul di semua user secara live)
+    db.collection("Kelas").onSnapshot((snapshot) => {
+        let html = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            html += `<tr>
+                <td><b>${data.idKelas}</b></td>
+                <td>${data.namaKelas}</td>
+                <td>${data.lokasi}</td>
+                <td>${data.kapasitas} Kursi</td>
+                <td><span class="badge badge-green">${data.status}</span></td>
+                <td><button class="btn-delete" onclick="hapusData('Kelas', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`;
+        });
+        document.getElementById('tbodyKelas').innerHTML = html;
+    });
+
+
+    /* =======================================================
+       LOGIKA CRUD 2: MASTER DATA PROPERTI (KOLEKSI: Properti)
+       ======================================================= */
+    document.getElementById('formProperti').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('idProperti').value.trim();
+        const totalStock = parseInt(document.getElementById('totalProperti').value);
+        const btn = document.getElementById('btnSimpanProperti');
+        btn.disabled = true;
+
+        db.collection("Properti").doc(id).set({
+            idProperti: id,
+            namaProperti: document.getElementById('namaProperti').value,
+            jumlahTotal: totalStock,
+            jumlahDipinjam: 0, // Awal input bawaan adalah nol
+            jumlahTersedia: totalStock // Di awal ketersediaan sama dengan total stok awal
+        }).then(() => {
+            alert("Master data properti berhasil disimpan!");
+            document.getElementById('formProperti').reset();
+            btn.disabled = false;
+        }).catch(err => { alert("Gagal: " + err.message); btn.disabled = false; });
+    });
+
+    // Real-time Listener Daftar Properti + Kalkulasi Matematika Live Stok Barang
+    db.collection("Properti").onSnapshot((snapshot) => {
+        let html = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            
+            // Perhitungan stok otomatis live sesuai keinginanmu
+            const total = data.jumlahTotal || 0;
+            const dipinjam = data.jumlahDipinjam || 0;
+            const tersedia = total - dipinjam; // Sisa hitung otomatis
+
+            html += `<tr>
+                <td><b>${data.idProperti}</b></td>
+                <td>${data.namaProperti}</td>
+                <td><span class="badge badge-blue">${total} Unit</span></td>
+                <td><span class="badge badge-orange">${dipinjam} Unit</span></td>
+                <td><span class="badge badge-green">${tersedia} Unit</span></td>
+                <td><button class="btn-delete" onclick="hapusData('Properti', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`;
+        });
+        document.getElementById('tbodyProperti').innerHTML = html;
+    });
+
+    // Fungsi Global Hapus Data Master Inventaris
+    function hapusData(collectionName, id) {
+        if(confirm("Apakah Anda yakin ingin menghapus data master inventaris ini?")) {
+            db.collection(collectionName).doc(id).delete()
+            .then(() => alert("Data berhasil dihapus dari sistem!"))
+            .catch(err => alert("Gagal menghapus: " + err.message));
+        }
+    }
+  </script>
+</body>
+</html>
