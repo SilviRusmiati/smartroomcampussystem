@@ -74,16 +74,13 @@
     }
 
     /* =========================================
-       HERO SECTION (OVERLAY DIGELAPKAN)
+       HERO SECTION 
        ========================================= */
     .hero {
       height: calc(100vh - 83px); 
       display: flex; align-items: center; justify-content: center;
       flex-direction: column; text-align: center; 
       padding: 0 24px;
-      /* ========================================================
-         PERUBAHAN: Overlay warna hitam dikurangi dari 0.65 ke 0.2
-         ======================================================== */
       background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
       background-size: cover;
       background-position: center; 
@@ -118,7 +115,7 @@
     }
 
     /* =========================================
-       MENU BUTTONS (TIDAK TERLALU TRANSPARAN)
+       MENU BUTTONS
        ========================================= */
     .menu { 
       display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; 
@@ -130,10 +127,10 @@
 
     .menu button {
       padding: 14px 32px; 
-      border: 1px solid rgba(255, 255, 255, 0.6); /* Garis tepi lebih terlihat */
+      border: 1px solid rgba(255, 255, 255, 0.6); 
       border-radius: 50px;
-      background: rgba(255, 255, 255, 0.25); /* Background dinaikkan kepekatannya */
-      backdrop-filter: blur(15px); /* Efek blur diperkuat */
+      background: rgba(255, 255, 255, 0.25); 
+      backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       color: white; 
       font-size: 0.95rem; 
@@ -141,7 +138,7 @@
       cursor: pointer; 
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       letter-spacing: 0.5px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.3); /* Bayangan teks agar lebih terbaca */
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3); 
     }
     
     .menu button:hover { 
@@ -150,7 +147,7 @@
       transform: translateY(-4px); 
       box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
       border-color: #ffffff; 
-      text-shadow: none; /* Hilangkan bayangan teks saat di-hover karena background jadi putih */
+      text-shadow: none;
     }
 
     /* Animasi */
@@ -158,7 +155,7 @@
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
     /* =========================================
-       MEDIA QUERIES (PENGATURAN KHUSUS LAYAR HP)
+       MEDIA QUERIES 
        ========================================= */
     @media (max-width: 768px) {
       .navbar { padding: 15px 24px; }
@@ -200,10 +197,10 @@
     <p class="login-prompt">Silakan pilih portal akses Anda</p>
 
     <div class="menu">
-      <a href="loginmahasiswa.html"><button>Mahasiswa</button></a>
-      <a href="logindosen.html"><button>Dosen</button></a>
-      <a href="loginorganisasi.html"><button>Organisasi</button></a>
-      <a href="LoginSapras.html"><button>Sarana & Prasarana</button></a>
+      <a href="Mahasiswa/loginmahasiswa.html"><button>Mahasiswa</button></a>
+      <a href="Dosen/logindosen.html"><button>Dosen</button></a>
+      <a href="Organisasi/loginorganisasi.html"><button>Organisasi</button></a>
+      <a href="Sapras/loginsapras.html"><button>Sarana & Prasarana</button></a>
     </div>
   </section>
 
