@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Peminjaman Berhasil - Smarts Room</title>
+  <title>Peminjaman Gagal - Smarts Room</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,8 +19,8 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      /* Trik overlay hijau di atas background biru milikmu */
-      background: linear-gradient(rgba(34, 80, 45, 0.7), rgba(20, 60, 30, 0.8)), url("bg.biru.jpeg");
+      /* Trik overlay merah gelap di atas background biru milikmu */
+      background: linear-gradient(rgba(120, 20, 20, 0.75), rgba(80, 10, 10, 0.85)), url("bg.biru.jpeg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -28,7 +28,7 @@
     }
 
     /* KOTAK GLASSMORPHISM */
-    .success-card {
+    .fail-card {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -43,7 +43,7 @@
     }
 
     /* TEKS JUDUL */
-    .success-card h2 {
+    .fail-card h2 {
       color: #ffffff;
       font-size: 2rem;
       font-weight: 800;
@@ -53,44 +53,44 @@
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* IKON CENTANG BERLAPIS */
-    .check-outer {
+    /* IKON SILANG BERLAPIS */
+    .x-outer {
       width: 140px;
       height: 140px;
       border-radius: 50%;
-      background: rgba(74, 222, 128, 0.4); /* Lingkaran luar transparan */
+      background: rgba(239, 68, 68, 0.3); /* Lingkaran luar transparan merah */
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 35px auto;
-      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.15);
     }
 
-    .check-inner {
+    .x-inner {
       width: 95px;
       height: 95px;
       border-radius: 50%;
-      background: #34d399; /* Lingkaran dalam solid hijau terang */
+      background: #ef4444; /* Lingkaran dalam solid merah terang */
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), inset 0 -5px 10px rgba(0,0,0,0.1);
     }
 
-    .check-inner i {
+    .x-inner i {
       color: #ffffff;
-      font-size: 50px;
+      font-size: 55px;
       text-shadow: 0 3px 5px rgba(0,0,0,0.2);
     }
 
-    /* TOMBOL KEMBALI */
+    /* TOMBOL COBA LAGI */
     .btn-back {
       display: inline-block;
       background: rgba(255, 255, 255, 0.2);
       color: #ffffff;
       text-decoration: none;
       font-weight: 700;
-      padding: 14px 30px;
+      padding: 14px 35px;
       border-radius: 50px;
       border: 1px solid rgba(255, 255, 255, 0.4);
       transition: all 0.3s ease;
@@ -98,7 +98,7 @@
 
     .btn-back:hover {
       background: #ffffff;
-      color: #166534; /* Teks berubah hijau gelap saat di-hover */
+      color: #991b1b; /* Teks berubah merah gelap saat di-hover */
       transform: translateY(-3px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.15);
     }
@@ -112,16 +112,16 @@
 </head>
 <body>
 
-  <div class="success-card">
-    <h2>Peminjaman Kelas<br>Berhasil !</h2>
+  <div class="fail-card">
+    <h2>Peminjaman Kelas<br>Gagal !</h2>
     
-    <div class="check-outer">
-      <div class="check-inner">
-        <i class="fa-solid fa-check"></i>
+    <div class="x-outer">
+      <div class="x-inner">
+        <i class="fa-solid fa-xmark"></i>
       </div>
     </div>
 
-    <a href="Mahasiswa/dashboardmahasiswa.html" class="btn-back">Kembali ke Dashboard</a>
+    <a href="dashboardjadwal.html" class="btn-back">Coba Lagi</a>
   </div>
 
 </body>
