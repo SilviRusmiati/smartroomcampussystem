@@ -59,6 +59,14 @@
 
     /* TABEL */
     .table-title { color: #ffffff; font-weight: 800; font-size: 1.2rem; margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+    
+    /* SCROLLBAR UNTUK TABEL */
+    .table-wrapper { max-height: 280px; overflow-y: auto; padding-right: 5px; }
+    .table-wrapper::-webkit-scrollbar { width: 6px; }
+    .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .table-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); border-radius: 10px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.7); }
+
     .schedule-table { width: 100%; border-collapse: collapse; color: #ffffff; }
     .schedule-table th { padding: 12px; font-weight: 700; font-size: 0.75rem; border-bottom: 2px solid var(--accent); color: #fff; text-transform: uppercase; text-align: left; }
     .schedule-table td { padding: 16px 12px; border-bottom: 1px solid var(--accent); font-size: 0.95rem; }
@@ -123,14 +131,17 @@
 
     <div class="glass-card">
       <div class="table-title">Daftar Reservasi Disetujui</div>
-      <table class="schedule-table">
-        <thead>
-          <tr><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>Kegiatan</th><th>Status</th></tr>
-        </thead>
-        <tbody id="tbodyJadwal">
-          </tbody>
-      </table>
-    </div>
+      
+      <div class="table-wrapper">
+        <table class="schedule-table">
+          <thead>
+            <tr><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>Kegiatan</th><th>Status</th></tr>
+          </thead>
+          <tbody id="tbodyJadwal">
+            </tbody>
+        </table>
+      </div>
+      </div>
   </main>
 
   <div id="logoutModal" class="modal-overlay">

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
   <style>
     :root {
       --sidebar-bg: #f3f2ee;
@@ -23,7 +23,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { display: flex; min-height: 100vh; background: var(--sidebar-bg); -webkit-font-smoothing: antialiased; }
 
-    /* SIDEBAR */
+    /* SIDEBAR (Tetap aman tidak diubah) */
     .sidebar { width: 260px; background: var(--sidebar-bg); padding: 30px 20px; display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05); position: fixed; height: 100vh; }
     .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 5px; }
     .sidebar-brand img { width: 45px; height: auto; }
@@ -62,12 +62,6 @@
     .btn-save { width: 100%; padding: 14px; background: var(--text-dark); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
     .btn-save:hover { background: #0f172a; transform: translateY(-2px); }
     
-    /* TABLE STYLE */
-    .table-container { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: separate; border-spacing: 0; color: #ffffff; text-align: left; }
-    .data-table th { padding: 15px; font-weight: 700; font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.2); }
-    .data-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; }
-    
     .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #fff; display: inline-block; }
     .badge-green { background: #22c55e; }
     .badge-blue { background: #3b82f6; }
@@ -75,6 +69,47 @@
 
     .btn-delete { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; transition: 0.2s; }
     .btn-delete:hover { color: #f87171; transform: scale(1.1); }
+    
+    /* WADAH TABEL UTAMA (Sudah Dibersihkan) */
+    .table-container { 
+      width: 100%; 
+      min-width: 0; 
+    }
+
+    /* SCROLLBAR (Hanya ke bawah saja) */
+    .table-wrapper { 
+      max-height: 380px; 
+      overflow-y: auto; 
+      overflow-x: hidden; 
+      width: 100%; 
+      padding-right: 5px; 
+    }
+    .table-wrapper::-webkit-scrollbar { width: 6px; } 
+    .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .table-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); border-radius: 10px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.7); }
+
+    /* TABEL (Kolom memanjang proporsional) */
+    .data-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      color: #ffffff; 
+      text-align: left; 
+    }
+    .data-table th { 
+      padding: 15px 10px; 
+      font-weight: 700; 
+      font-size: 0.8rem; 
+      color: rgba(255,255,255,0.7); 
+      text-transform: uppercase; 
+      border-bottom: 2px solid rgba(255,255,255,0.2); 
+    }
+    .data-table td { 
+      padding: 15px 10px; 
+      border-bottom: 1px solid rgba(255,255,255,0.1); 
+      font-size: 0.95rem;
+      white-space: normal; 
+    }
 
     /* MODAL LOGOUT */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; }
@@ -151,13 +186,15 @@
 
         <div class="table-container">
           <div class="section-title">Daftar Ruangan Kelas</div>
-          <table class="data-table">
-            <thead>
-              <tr><th>ID</th><th>Nama Kelas</th><th>Lokasi</th><th>Kapasitas</th><th>Status</th><th>Aksi</th></tr>
-            </thead>
-            <tbody id="tbodyKelas">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr><th>ID</th><th>Nama Kelas</th><th>Lokasi</th><th>Kapasitas</th><th>Status</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="tbodyKelas">
               </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -183,13 +220,15 @@
 
         <div class="table-container">
           <div class="section-title">Kalkulasi Inventaris Properti</div>
-          <table class="data-table">
-            <thead>
-              <tr><th>ID Barang</th><th>Nama Properti</th><th>Total Stok</th><th>Dipinjam</th><th>Tersedia</th><th>Aksi</th></tr>
-            </thead>
-            <tbody id="tbodyProperti">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr><th>ID Barang</th><th>Nama Properti</th><th>Total Stok</th><th>Dipinjam</th><th>Tersedia</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="tbodyProperti">
               </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -221,7 +260,6 @@
       window.location.href = "../index.html"; 
     }
 
-    // Fungsi Switch Tab Cantik Tanpa Reload halaman
     function switchTab(type) {
         if(type === 'kelas') {
             document.getElementById('tabKelasBtn').classList.add('active');
@@ -236,7 +274,6 @@
         }
     }
 
-    // Firebase Initialization
     const firebaseConfig = {
       apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
       authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
@@ -256,9 +293,7 @@
         window.location.href = "loginsapras.html";
     }
 
-    /* =======================================================
-       LOGIKA CRUD 1: MASTER DATA KELAS (KOLEKSI: Kelas)
-       ======================================================= */
+    /* KELAS */
     document.getElementById('formKelas').addEventListener('submit', function(e) {
         e.preventDefault();
         const id = document.getElementById('idKelas').value.trim();
@@ -278,49 +313,38 @@
         }).catch(err => { alert("Gagal: " + err.message); btn.disabled = false; });
     });
 
-    // Real-time Listener Daftar Kelas (Muncul di semua user secara live)
-db.collection("Kelas").onSnapshot((snapshot) => {
-    let html = "";
-    snapshot.forEach((doc) => {
-        const data = doc.data();
-        html += `<tr>
-            <td><b>${data.idKelas}</b></td>
-            <td>${data.namaKelas}</td>
-            <td>${data.lokasi}</td>
-            <td>${data.kapasitas} Kursi</td>
-            <td><span class="badge badge-green">${data.status}</span></td>
-            <td>
-                <button class="btn-delete" onclick="isiFormKelas('${data.idKelas}', '${data.namaKelas}', '${data.lokasi}', ${data.kapasitas})" style="margin-right: 15px; color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn-delete" onclick="hapusData('Kelas', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-        </tr>`;
+    db.collection("Kelas").onSnapshot((snapshot) => {
+        let html = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            html += `<tr>
+                <td><b>${data.idKelas}</b></td>
+                <td>${data.namaKelas}</td>
+                <td>${data.lokasi}</td>
+                <td>${data.kapasitas} Kursi</td>
+                <td><span class="badge badge-green">${data.status}</span></td>
+                <td>
+                    <button class="btn-delete" onclick="isiFormKelas('${data.idKelas}', '${data.namaKelas}', '${data.lokasi}', ${data.kapasitas})" style="margin-right: 15px; color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-delete" onclick="hapusData('Kelas', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                </td>
+            </tr>`;
+        });
+        document.getElementById('tbodyKelas').innerHTML = html;
     });
-    document.getElementById('tbodyKelas').innerHTML = html;
-});
 
-function isiFormKelas(id, nama, lokasi, kapasitas) {
-    // Isi data ke form
-    document.getElementById('idKelas').value = id;
-    document.getElementById('namaKelas').value = nama;
-    document.getElementById('lokasiKelas').value = lokasi;
-    document.getElementById('kapasitasKelas').value = kapasitas;
+    function isiFormKelas(id, nama, lokasi, kapasitas) {
+        document.getElementById('idKelas').value = id;
+        document.getElementById('namaKelas').value = nama;
+        document.getElementById('lokasiKelas').value = lokasi;
+        document.getElementById('kapasitasKelas').value = kapasitas;
+        document.getElementById('idKelas').readOnly = true; 
+        document.getElementById('idKelas').style.opacity = "0.6";
+        document.querySelector('#formKelas .section-title').innerText = "Edit Data Kelas";
+        document.getElementById('btnSimpanKelas').innerText = "Update Data Kelas";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-    // Kunci ID Kelas agar tidak bisa diubah saat edit (mencegah ID ganda)
-    document.getElementById('idKelas').readOnly = true; 
-    document.getElementById('idKelas').style.opacity = "0.6";
-    
-    // Ubah judul form jadi "Edit Data"
-    document.querySelector('#formKelas .section-title').innerText = "Edit Data Kelas";
-    
-    // Ganti teks tombol
-    document.getElementById('btnSimpanKelas').innerText = "Update Data Kelas";
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-    /* =======================================================
-       LOGIKA CRUD 2: MASTER DATA PROPERTI (KOLEKSI: Properti)
-       ======================================================= */
+    /* PROPERTI */
     document.getElementById('formProperti').addEventListener('submit', function(e) {
         e.preventDefault();
         const id = document.getElementById('idProperti').value.trim();
@@ -332,8 +356,8 @@ function isiFormKelas(id, nama, lokasi, kapasitas) {
             idProperti: id,
             namaProperti: document.getElementById('namaProperti').value,
             jumlahTotal: totalStock,
-            jumlahDipinjam: 0, // Awal input bawaan adalah nol
-            jumlahTersedia: totalStock // Di awal ketersediaan sama dengan total stok awal
+            jumlahDipinjam: 0,
+            jumlahTersedia: totalStock
         }).then(() => {
             alert("Master data properti berhasil disimpan!");
             document.getElementById('formProperti').reset();
@@ -341,41 +365,36 @@ function isiFormKelas(id, nama, lokasi, kapasitas) {
         }).catch(err => { alert("Gagal: " + err.message); btn.disabled = false; });
     });
 
-    // Real-time Listener Daftar Properti + Kalkulasi Matematika Live Stok Barang
-db.collection("Properti").onSnapshot((snapshot) => {
-    let html = "";
-    snapshot.forEach((doc) => {
-        const data = doc.data();
-        
-        // Perhitungan stok otomatis live sesuai keinginanmu
-        const total = data.jumlahTotal || 0;
-        const dipinjam = data.jumlahDipinjam || 0;
-        const tersedia = total - dipinjam; // Sisa hitung otomatis
+    db.collection("Properti").onSnapshot((snapshot) => {
+        let html = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const total = data.jumlahTotal || 0;
+            const dipinjam = data.jumlahDipinjam || 0;
+            const tersedia = total - dipinjam; 
 
-        html += `<tr>
-            <td><b>${data.idProperti}</b></td>
-            <td>${data.namaProperti}</td>
-            <td><span class="badge badge-blue">${total} Unit</span></td>
-            <td><span class="badge badge-orange">${dipinjam} Unit</span></td>
-            <td><span class="badge badge-green">${tersedia} Unit</span></td>
-            <td>
-                <button class="btn-delete" onclick="isiFormProperti('${data.idProperti}', '${data.namaProperti}', ${total})" style="margin-right: 15px; color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn-delete" onclick="hapusData('Properti', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-        </tr>`;
+            html += `<tr>
+                <td><b>${data.idProperti}</b></td>
+                <td>${data.namaProperti}</td>
+                <td><span class="badge badge-blue">${total} Unit</span></td>
+                <td><span class="badge badge-orange">${dipinjam} Unit</span></td>
+                <td><span class="badge badge-green">${tersedia} Unit</span></td>
+                <td>
+                    <button class="btn-delete" onclick="isiFormProperti('${data.idProperti}', '${data.namaProperti}', ${total})" style="margin-right: 15px; color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-delete" onclick="hapusData('Properti', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                </td>
+            </tr>`;
+        });
+        document.getElementById('tbodyProperti').innerHTML = html;
     });
-    document.getElementById('tbodyProperti').innerHTML = html;
-});
 
-// Fungsi untuk mengisi form saat tombol edit Properti diklik
-function isiFormProperti(id, nama, total) {
-    document.getElementById('idProperti').value = id;
-    document.getElementById('namaProperti').value = nama;
-    document.getElementById('totalProperti').value = total;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+    function isiFormProperti(id, nama, total) {
+        document.getElementById('idProperti').value = id;
+        document.getElementById('namaProperti').value = nama;
+        document.getElementById('totalProperti').value = total;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-    // Fungsi Global Hapus Data Master Inventaris
     function hapusData(collectionName, id) {
         if(confirm("Apakah Anda yakin ingin menghapus data master inventaris ini?")) {
             db.collection(collectionName).doc(id).delete()
