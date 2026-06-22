@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Smart Room</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root { --sidebar-bg: #f0f0f0; --sidebar-text: #4b5563; --sidebar-active: #2a3e59; --text-dark: #1e293b; --glass-bg: rgba(255, 255, 255, 0.25); --glass-border: rgba(255, 255, 255, 0.4); }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { display: flex; min-height: 100vh; background: var(--sidebar-bg); -webkit-font-smoothing: antialiased; }
+
+    /* SIDEBAR */
+    .sidebar { width: 260px; background: var(--sidebar-bg); padding: 30px 20px; display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 15px rgba(0,0,0,0.05); position: fixed; height: 100vh; }
+    .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 5px; }
+    .sidebar-brand img { width: 45px; }
+    .brand-text .title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
+    .brand-text .subtitle { font-size: 0.65rem; font-weight: 700; color: var(--sidebar-text); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+
+    .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; color: var(--sidebar-text); font-weight: 600; font-size: 0.95rem; border-radius: 50px; transition: all 0.3s ease; cursor: pointer; }
+    .sidebar-menu li.active a { background: var(--sidebar-active); color: #ffffff; box-shadow: 0 4px 10px rgba(42, 62, 89, 0.3); }
+    .sidebar-menu li a:hover:not(.active) { background: rgba(0, 0, 0, 0.05); transform: translateX(5px); }
+    .logout-item { margin-top: auto; }
+
+    /* KONTEN UTAMA */
+    .main-content { flex: 1; margin-left: 260px; background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("../bg.biru.jpeg"); background-size: cover; background-position: center; background-attachment: fixed; padding: 40px 60px; display: flex; flex-direction: column; gap: 25px; min-height: 100vh; }
+    .header-section { margin-bottom: 10px; }
+    .header-section p { font-size: 1.05rem; font-weight: 600; color: #ffffff; margin-bottom: 5px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+    .header-section h1 { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+    .glass-card { background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; align-items: start; }
+    .card-title { font-size: 1.1rem; color: #ffffff; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
+
+    .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0; color: #ffffff; text-align: left; }
+    .schedule-table th { padding: 12px; font-weight: 700; font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+    .schedule-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
+    .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #fff; }
+    .green { background: #22c55e; }
+    .red { background: #ef4444; }
+
+    .notif-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
+    .notif-item i { color: #f59e0b; margin-top: 4px; }
+    .notif-item p { font-size: 0.95rem; color: #ffffff; line-height: 1.4; }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+    .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; }
+    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="../Logo.png" alt="Logo">
+      <div class="brand-text">
+        <div class="title">Smart Room</div>
+        <div class="subtitle">Campus System</div>
+      </div>
+    </div>
+    <ul class="sidebar-menu">
+      <li class="active"><a href="dashboardmahasiswa.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="dashboardjadwalmahasiswa.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
+      <li><a href="pengaturanmahasiswa.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
+      <li><a href="peminjaman.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
+      <li class="logout-item"><a onclick="document.getElementById('logoutModal').style.display='flex'"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="header-section">
+      <p id="greetingText">Memuat...</p>
+      <h1>Dashboard</h1>
+    </div>
+
+    <div class="dashboard-grid">
+      <section class="glass-card">
+        <h3 class="card-title">Ringkasan Ketersediaan</h3>
+        <table class="schedule-table">
+          <thead><tr><th>Kelas</th><th>Status</th></tr></thead>
+          <tbody id="liveStatusKelas"></tbody>
+        </table>
+      </section>
+
+      <section class="glass-card">
+        <h3 class="card-title">Jadwal Anda</h3>
+        <table class="schedule-table">
+          <thead><tr><th>Tanggal</th><th>Kegiatan</th></tr></thead>
+          <tbody id="liveJadwal"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <section class="glass-card">
+      <h3 class="card-title">Notifikasi Penting</h3>
+      <div id="liveNotif" class="notif-container"></div>
+    </section>
+  </main>
+
+  <div id="logoutModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <h2 class="modal-title">Konfirmasi Keluar</h2>
+      <button class="btn-cancel" onclick="document.getElementById('logoutModal').style.display='none'">Batal</button>
+      <button class="btn-confirm" onclick="localStorage.removeItem('loggedInUserNIM'); window.location.href='../index.html'">Ya, Logout</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    const db = firebase.firestore();
+    const nim = localStorage.getItem("loggedInUserNIM");
+    const nama = localStorage.getItem("loggedInUserNama");
+    document.getElementById('greetingText').innerText = "Selamat datang, " + (nama || "Mahasiswa");
+
+    // Otomatisasi data
+    db.collection("Kelas").onSnapshot(snap => {
+        let h = "";
+        snap.forEach(d => { const v = d.data(); h += `<tr><td>${v.namaKelas}</td><td><span class="badge ${v.status=='Tersedia'?'green':'red'}">${v.status}</span></td></tr>`; });
+        document.getElementById('liveStatusKelas').innerHTML = h;
+    });
+
+    db.collection("Peminjaman").where("namaPemohon", "==", nama || "").where("status", "==", "Diterima").onSnapshot(snap => {
+        let h = "";
+        snap.forEach(d => { const v = d.data(); h += `<tr><td>${v.tanggalPinjam}</td><td>${v.keperluan}</td></tr>`; });
+        document.getElementById('liveJadwal').innerHTML = h || "<tr><td colspan='2'>Tidak ada jadwal.</td></tr>";
+    });
+  </script>
+</body>
+</html>
