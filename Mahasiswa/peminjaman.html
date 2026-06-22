@@ -179,26 +179,56 @@
     let daftarPropertiGlobal = {}; // Untuk simpan sisa stok
     let keranjangProperti = []; // Untuk simpan properti yang dipinjam
 
-    db.collection("Kelas").onSnapshot(snapshot => {
-        let html = "";
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            
-            // LOGIKA TAMBAHAN:
-            // Jika status "Penuh", kita hilangkan onclick-nya atau beri kelas "disabled"
-            const isPenuh = data.status === "Penuh";
-            
-            html += `<div class="room-card ${isPenuh ? 'penuh' : ''}" 
-                        ${isPenuh ? '' : `onclick="selectRoom(this, '${doc.id}')"`}
-                        style="${isPenuh ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
-                        <h3>${data.namaKelas}</h3>
-                        <p>Kapasitas: ${data.kapasitas} Org</p>
-                        <span class="status-badge ${isPenuh ? 'penuh' : ''}">${data.status}</span>
-                     </div>`;
-        });
-        document.getElementById('roomsContainer').innerHTML = html;
+    let jadwalTerbooking = []; // 1. Tambahkan variabel ini
+
+    // 2. Load data booking yang sudah disetujui sebagai acuan "kunci" ruangan
+    db.collection("Peminjaman").where("status", "==", "Diterima").onSnapshot(snap => {
+        jadwalTerbooking = [];
+        snap.forEach(d => jadwalTerbooking.push(d.data()));
+        renderRuangan(); // Render ulang tiap ada perubahan data booking
     });
 
+    // 3. FUNGSI UTAMA UNTUK RENDER RUANGAN
+    function renderRuangan() {
+        const tglDipilih = document.getElementById('tanggalPinjam').value;
+        const slotsDipilih = [...document.querySelectorAll('.slot-btn.selected')].map(b => b.innerText);
+
+        db.collection("Kelas").get().then(snapshot => {
+            let html = "";
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                
+                // Cek ketersediaan: apakah ruangan ini sudah dibooking di tanggal & jam tersebut?
+                const isTerkunci = jadwalTerbooking.some(booking => 
+                    booking.idKelas === doc.id && 
+                    booking.tanggalPinjam === tglDipilih && 
+                    booking.jam.some(j => slotsDipilih.includes(j))
+                );
+
+                const isPenuh = data.status === "Penuh" || isTerkunci;
+
+                html += `<div class="room-card ${isPenuh ? 'penuh' : ''}" 
+                            ${isPenuh ? '' : `onclick="selectRoom(this, '${doc.id}')"`}
+                            style="${isPenuh ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                            <h3>${data.namaKelas}</h3>
+                            <p>Kapasitas: ${data.kapasitas} Org</p>
+                            <span class="status-badge ${isPenuh ? 'penuh' : ''}">${isPenuh ? 'Penuh/Terkunci' : 'Tersedia'}</span>
+                         </div>`;
+            });
+            document.getElementById('roomsContainer').innerHTML = html;
+        });
+    }
+
+    // ... (Fungsi tambahProperti, renderKeranjang, dll tetap sama) ...
+
+    // SAAT TANGGAL ATAU SLOT BERUBAH, RENDER ULANG RUANGAN
+    document.getElementById('tanggalPinjam').addEventListener('change', renderRuangan);
+    document.querySelectorAll('.slot-btn').forEach(btn => {
+        btn.addEventListener('click', renderRuangan);
+    });
+
+    // Panggil sekali di awal
+    renderRuangan();
     db.collection("Properti").onSnapshot(snapshot => {
         let options = '<option value="">Pilih Properti...</option>';
         daftarPropertiGlobal = {}; // reset global data
@@ -323,6 +353,16 @@
             btn.disabled = false;
         }
     });
+    // SAAT TANGGAL BERUBAH, RENDER ULANG RUANGAN
+    document.getElementById('tanggalPinjam').addEventListener('change', renderRuangan);
+
+    // SAAT SLOT WAKTU DIKLIK, RENDER ULANG RUANGAN
+    document.querySelectorAll('.slot-btn').forEach(btn => {
+        btn.addEventListener('click', renderRuangan);
+    });
+
+    // Panggil sekali di awal agar tampilan muncul pertama kali
+    renderRuangan();
   </script>
 </body>
 </html>

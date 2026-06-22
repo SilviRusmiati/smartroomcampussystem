@@ -182,43 +182,44 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const nip = localStorage.getItem("loggedInUserSaprasNIP");
-    if (!nip) {
-        window.location.href = "loginsapras.html";
-    }
-
-    // Variabel array global penampung data sementara untuk sistem filter pencarian instan
+    // 1. Variabel Global
     let listJadwalSemua = [];
+    let mapKelas = {};
 
-    // REAL-TIME LISTENER: AMBIL DATA YANG BERSTATUS "DITERIMA" (ARTINYA TERJADWAL AKTIF)
-    db.collection("Peminjaman").where("status", "==", "Diterima").orderBy("dibuatPada", "desc").onSnapshot((snapshot) => {
-        listJadwalSemua = [];
-        if (snapshot.empty) {
-            document.getElementById('tbodyJadwalDinamis').innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">Belum ada jadwal reservasi aktif saat ini.</td></tr>`;
-            return;
-        }
-
-        snapshot.forEach((doc) => {
-            listJadwalSemua.push(doc.data());
+    // 2. Inisialisasi: Ambil data kelas dulu (Mapping ID -> Nama)
+    async function init() {
+        const snapKelas = await db.collection("Kelas").get();
+        snapKelas.forEach(doc => {
+            mapKelas[doc.id] = doc.data().namaKelas;
         });
 
+        // 3. Ambil data Peminjaman
+    db.collection("Peminjaman").where("status", "==", "Diterima").onSnapshot((snapshot) => {
+        listJadwalSemua = [];
+        snapshot.forEach((doc) => {
+            // Kita push semua data dokumen ke dalam array
+            listJadwalSemua.push(doc.data());
+        });
+        // Panggil render setelah data masuk
         renderTabelJadwal(listJadwalSemua);
     });
+    }
 
-    // Sub-fungsi merender baris elemen tabel
+    // 4. Fungsi Render Tabel
     function renderTabelJadwal(dataArray) {
-        let html = "";
+        const tbody = document.getElementById('tbodyJadwalDinamis');
         if(dataArray.length === 0) {
-            document.getElementById('tbodyJadwalDinamis').innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">Data yang Anda cari tidak ditemukan.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">Belum ada jadwal reservasi aktif.</td></tr>`;
             return;
         }
 
+        let html = "";
         dataArray.forEach((item) => {
-            const tgl = item.tanggalPinjam || item.tanggal || "-";
-            const waktu = `${item.jamMulai || "00.00"} - ${item.jamSelesai || "00.00"}`;
-            const ruang = item.namaKelas || item.idKelas || "Umum";
-            const kegiatan = item.keperluan || item.kegiatan || "Agenda Akademik";
-            const pemesan = item.namaPemohon || item.nama || "Civitas Akademika";
+            const tgl = item.tanggalPinjam || "-";
+            const waktu = Array.isArray(item.jam) ? item.jam.join(', ') : (item.jam || "-");
+            const ruang = mapKelas[item.idKelas] || item.idKelas || "Umum"; // Pakai Map
+            const kegiatan = item.keperluan || "Agenda Akademik";
+            const pemesan = item.namaPemohon || "Civitas Akademika";
 
             html += `<tr>
                 <td>${tgl}</td>
@@ -229,23 +230,23 @@
                 <td><span class="status-badge">Terjadwal</span></td>
             </tr>`;
         });
-        document.getElementById('tbodyJadwalDinamis').innerHTML = html;
+        tbody.innerHTML = html;
     }
 
-    // INTERAKSI LIVE FILTER KEY-UP INPUT PENCARIAN
+    // 5. Fitur Pencarian
     document.getElementById('inputCariJadwal').addEventListener('input', function(e) {
         const keyword = e.target.value.toLowerCase();
-        
         const hasilFilter = listJadwalSemua.filter(item => {
-            const ruang = (item.namaKelas || item.idKelas || "").toLowerCase();
-            const kegiatan = (item.keperluan || item.kegiatan || "").toLowerCase();
-            const pemesan = (item.namaPemohon || item.nama || "").toLowerCase();
-            
+            const ruang = (mapKelas[item.idKelas] || item.idKelas || "").toLowerCase();
+            const kegiatan = (item.keperluan || "").toLowerCase();
+            const pemesan = (item.namaPemohon || "").toLowerCase();
             return ruang.includes(keyword) || kegiatan.includes(keyword) || pemesan.includes(keyword);
         });
-
         renderTabelJadwal(hasilFilter);
     });
+
+    // Jalankan inisialisasi
+    init();
   </script>
 </body>
 </html>
