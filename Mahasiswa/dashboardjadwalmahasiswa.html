@@ -176,29 +176,48 @@
 
     let dataJadwal = [];
 
-    // Ambil data dari koleksi Peminjaman yang statusnya "Diterima"
-    db.collection("Peminjaman").where("status", "==", "Diterima").onSnapshot(snapshot => {
+    // Mengambil semua data peminjaman agar status ditolak/diterima bisa muncul
+    db.collection("Peminjaman").onSnapshot(snapshot => {
         dataJadwal = [];
-        snapshot.forEach(doc => dataJadwal.push(doc.data()));
+        snapshot.forEach(doc => {
+            let item = doc.data();
+            dataJadwal.push(item);
+        });
         renderJadwal(dataJadwal);
     });
 
     function renderJadwal(data) {
         const tbody = document.getElementById('tbodyJadwal');
-        tbody.innerHTML = data.map(item => `
+        tbody.innerHTML = data.map(item => {
+            // Memastikan nama ruangan muncul (cek field namaKelas atau idKelas)
+            const namaRuangan = item.namaKelas || item.idKelas || "Tidak diketahui";
+            
+            // Logika warna status
+            const statusClass = item.status === "Diterima" ? "green" : "red";
+            
+            return `
             <tr>
-                <td>${item.tanggalPinjam}</td>
-                <td>${item.jam.join(', ')}</td>
-                <td>${item.namaKelas}</td>
-                <td>${item.keperluan}</td>
-                <td><span class="status-badge">Disetujui</span></td>
+                <td>${item.tanggalPinjam || '-'}</td>
+                <td>${item.jam ? item.jam.join(', ') : '-'}</td>
+                <td>${namaRuangan}</td>
+                <td>${item.keperluan || '-'}</td>
+                <td><span class="status-badge ${statusClass}">${item.status || 'Pending'}</span></td>
             </tr>
-        `).join('');
+            `;
+        }).join('');
     }
+
+    // CSS Tambahan untuk badge merah (Ditolak)
+    const style = document.createElement('style');
+    style.innerHTML = `.red { background: #ef4444 !important; }`;
+    document.head.appendChild(style);
 
     document.getElementById('cariJadwal').addEventListener('input', (e) => {
         const val = e.target.value.toLowerCase();
-        renderJadwal(dataJadwal.filter(i => i.namaKelas.toLowerCase().includes(val) || i.keperluan.toLowerCase().includes(val)));
+        renderJadwal(dataJadwal.filter(i => 
+            (i.namaKelas && i.namaKelas.toLowerCase().includes(val)) || 
+            (i.keperluan && i.keperluan.toLowerCase().includes(val))
+        ));
     });
   </script>
 </body>
