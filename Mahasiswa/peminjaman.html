@@ -183,10 +183,17 @@
         let html = "";
         snapshot.forEach(doc => {
             const data = doc.data();
-            html += `<div class="room-card" onclick="selectRoom(this, '${doc.id}')">
+            
+            // LOGIKA TAMBAHAN:
+            // Jika status "Penuh", kita hilangkan onclick-nya atau beri kelas "disabled"
+            const isPenuh = data.status === "Penuh";
+            
+            html += `<div class="room-card ${isPenuh ? 'penuh' : ''}" 
+                        ${isPenuh ? '' : `onclick="selectRoom(this, '${doc.id}')"`}
+                        style="${isPenuh ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
                         <h3>${data.namaKelas}</h3>
                         <p>Kapasitas: ${data.kapasitas} Org</p>
-                        <span class="status-badge">${data.status}</span>
+                        <span class="status-badge ${isPenuh ? 'penuh' : ''}">${data.status}</span>
                      </div>`;
         });
         document.getElementById('roomsContainer').innerHTML = html;
