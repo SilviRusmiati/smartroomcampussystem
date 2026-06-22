@@ -51,8 +51,11 @@
     .green { background: #22c55e; }
     .red { background: #ef4444; }
 
-    .notif-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; color: #ffffff; }
+    .notif-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; color: #ffffff; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; border-left: 4px solid #22c55e; }
+    .notif-item.rejected { border-left-color: #ef4444; }
     .notif-item i { color: #f59e0b; margin-top: 4px; }
+    .notif-item.rejected i { color: #ef4444; }
+    .notif-item.approved i { color: #22c55e; }
     .notif-item p { font-size: 0.95rem; }
 </style>
 </head>
@@ -123,7 +126,14 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Fungsi untuk mengambil nama dari database jika tidak ada di localStorage
+    // Mapping nama ruangan agar tidak muncul ID (seperti "R_0001") di dashboard
+    let namaRuanganMap = {};
+    db.collection("Kelas").get().then(snapshot => {
+        snapshot.forEach(doc => {
+            namaRuanganMap[doc.id] = doc.data().namaKelas;
+        });
+    });
+
     const nim = localStorage.getItem("loggedInUserNIM");
     let namaUser = localStorage.getItem("loggedInUserNama");
 
@@ -148,12 +158,48 @@
         document.getElementById('liveStatusKelas').innerHTML = h;
     });
 
-    // Load Jadwal Mahasiswa
+    // Load Jadwal Mahasiswa (Variabel idKelas dan keperluan diperbaiki)
     db.collection("Peminjaman").where("namaPemohon", "==", namaUser || "").where("status", "==", "Diterima").onSnapshot(snap => {
         let h = "";
-        snap.forEach(d => { const v = d.data(); h += `<tr><td>${v.tanggalPinjam}</td><td>${v.namaKelas}</td></tr>`; });
+        snap.forEach(d => { 
+            const v = d.data(); 
+            // Ambil nama ruangan yang asli berdasarkan ID-nya, jika tidak ada fallback ke ID-nya.
+            const namaRuanganAsli = namaRuanganMap[v.idKelas] || v.idKelas; 
+            h += `<tr>
+                    <td style="font-weight:700;">${v.tanggalPinjam}</td>
+                    <td>${namaRuanganAsli} <br><span style="font-size:0.75rem; opacity:0.8;">${v.keperluan}</span></td>
+                  </tr>`; 
+        });
         document.getElementById('liveJadwal').innerHTML = h || "<tr><td>Belum ada jadwal mendatang</td></tr>";
     });
+
+    // Load Notifikasi Mahasiswa Berdasarkan Status Peminjaman (Hanya yg Diterima/Ditolak)
+    db.collection("Peminjaman").where("namaPemohon", "==", namaUser || "").where("status", "in", ["Diterima", "Ditolak"]).onSnapshot(snap => {
+        let notifHTML = "";
+        snap.forEach(d => {
+            const v = d.data();
+            const namaRuanganAsli = namaRuanganMap[v.idKelas] || v.idKelas; 
+            
+            if (v.status === "Diterima") {
+                notifHTML += `<div class="notif-item approved">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <p>Pengajuan peminjaman <b>${namaRuanganAsli}</b> untuk tanggal ${v.tanggalPinjam} telah <b>Disetujui</b> oleh Sapras.</p>
+                              </div>`;
+            } else if (v.status === "Ditolak") {
+                notifHTML += `<div class="notif-item rejected">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                                <p>Mohon maaf, pengajuan peminjaman <b>${namaRuanganAsli}</b> untuk tanggal ${v.tanggalPinjam} telah <b>Ditolak</b>.</p>
+                              </div>`;
+            }
+        });
+
+        if(notifHTML !== "") {
+            document.getElementById('liveNotif').innerHTML = notifHTML;
+        } else {
+            document.getElementById('liveNotif').innerHTML = `<div class="notif-item"><i class="fa-solid fa-bell"></i><p>Tidak ada notifikasi baru.</p></div>`;
+        }
+    });
+
   </script>
 </body>
 </html>

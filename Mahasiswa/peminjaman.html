@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <<style>
+  <style>
     :root {
       --sidebar-bg: #f3f2ee;
       --sidebar-text: #4b5563;
@@ -66,7 +66,7 @@
     .input-group label { display: block; font-size: 0.9rem; font-weight: 800; color: #ffffff; margin-bottom: 10px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
     .input-glass { width: 100%; padding: 14px; background: rgba(255,255,255,0.25); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 0.9rem; font-weight: 700; outline: none; }
     
-    /* SOLUSI AGAR TEKS DROPDOWN KELIHATAN (Teks jadi gelap, background putih) */
+    /* SOLUSI AGAR TEKS DROPDOWN KELIHATAN */
     .input-glass option { color: var(--text-dark); background: #ffffff; }
     
     .upload-group { grid-column: 5; grid-row: 1 / span 2; display: flex; flex-direction: column; }
@@ -79,6 +79,10 @@
     .slot-btn.selected { background: #1b9e4d; border-color: #fff; }
 
     .btn-submit { width: 100%; background: var(--text-dark); color: #ffffff; padding: 18px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+    
+    .btn-add-prop { background: var(--text-dark); color: white; border: none; border-radius: 10px; width: 50px; font-size: 1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+    .btn-add-prop:hover { transform: scale(1.05); }
+    .list-properti-item { background: rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; color: #fff; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-weight: 600;}
   </style>
 </head>
 <body>
@@ -94,7 +98,6 @@
     <ul class="sidebar-menu">
       <li><a href="dashboardmahasiswa.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
       <li><a href="jadwalmahasiswa.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
-      <!-- Menu Pengaturan Ditambahkan Kembali -->
       <li><a href="pengaturanmahasiswa.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
       <li class="active"><a href="peminjaman.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
       <li class="logout-item"><a onclick="window.location.href='../index.html'"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
@@ -115,13 +118,22 @@
       <div class="form-wrapper">
         <div class="input-group"><label>Tanggal</label><input type="date" id="tanggalPinjam" class="input-glass" required></div>
         <div class="input-group"><label>Keperluan</label><input type="text" id="keperluan" class="input-glass" required></div>
+        
         <div class="input-group">
             <label>Properti</label>
             <select id="selectProperti" class="input-glass">
                 <option value="">Tidak ada</option>
             </select>
+            <div id="keranjangContainer"></div>
         </div>
-        <div class="input-group"><label>Jumlah</label><input type="number" id="jumlahBarang" class="input-glass" min="1" value="1"></div>
+        
+        <div class="input-group">
+            <label>Jumlah</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="jumlahBarang" class="input-glass" min="1" value="1">
+                <button type="button" class="btn-add-prop" onclick="tambahProperti()" title="Tambah Properti"><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>
         
         <div class="input-group upload-group">
             <label>Berkas</label>
@@ -164,6 +176,8 @@
     const db = firebase.firestore();
 
     let selectedRoom = null;
+    let daftarPropertiGlobal = {}; // Untuk simpan sisa stok
+    let keranjangProperti = []; // Untuk simpan properti yang dipinjam
 
     db.collection("Kelas").onSnapshot(snapshot => {
         let html = "";
@@ -179,10 +193,12 @@
     });
 
     db.collection("Properti").onSnapshot(snapshot => {
-        let options = '<option value="">Tidak ada</option>';
+        let options = '<option value="">Pilih Properti...</option>';
+        daftarPropertiGlobal = {}; // reset global data
         snapshot.forEach(doc => {
             const data = doc.data();
-            options += `<option value="${doc.id}">${data.namaProperti} (Sisa: ${data.jumlahTersedia})</option>`;
+            daftarPropertiGlobal[doc.id] = data; // Simpan data stok
+            options += `<option value="${doc.id}" data-nama="${data.namaProperti}">${data.namaProperti} (Sisa: ${data.jumlahTersedia})</option>`;
         });
         document.getElementById('selectProperti').innerHTML = options;
     });
@@ -193,36 +209,112 @@
         selectedRoom = id;
     }
 
-    document.getElementById('formPeminjaman').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!selectedRoom) return alert("Pilih ruangan dulu!");
-        const propID = document.getElementById('selectProperti').value;
-        const jumlahDiminta = parseInt(document.getElementById('jumlahBarang').value);
-        
-        if (propID) {
-            const doc = await db.collection("Properti").doc(propID).get();
-            if (jumlahDiminta > doc.data().jumlahTersedia) return alert("Stok properti tidak cukup!");
-            await db.collection("Properti").doc(propID).update({
-                jumlahTersedia: firebase.firestore.FieldValue.increment(-jumlahDiminta),
-                jumlahDipinjam: firebase.firestore.FieldValue.increment(jumlahDiminta)
-            });
+    // FUNGSI UNTUK MENAMBAH PROPERTI KE KERANJANG
+    function tambahProperti() {
+        const select = document.getElementById('selectProperti');
+        const idProp = select.value;
+        const qty = parseInt(document.getElementById('jumlahBarang').value);
+
+        if (!idProp) return alert("Pilih properti terlebih dahulu!");
+        if (qty < 1 || isNaN(qty)) return alert("Jumlah minimal 1!");
+
+        const propData = daftarPropertiGlobal[idProp];
+        if (qty > propData.jumlahTersedia) return alert(`Stok ${propData.namaProperti} tidak cukup! (Sisa: ${propData.jumlahTersedia})`);
+
+        // Cek apakah barang sudah ada di keranjang
+        const index = keranjangProperti.findIndex(p => p.id === idProp);
+        if (index > -1) {
+            const totalBaru = keranjangProperti[index].jumlah + qty;
+            if (totalBaru > propData.jumlahTersedia) return alert("Total jumlah yang Anda minta melebihi stok yang tersedia!");
+            keranjangProperti[index].jumlah = totalBaru;
+        } else {
+            const namaProp = select.options[select.selectedIndex].getAttribute('data-nama');
+            keranjangProperti.push({ id: idProp, nama: namaProp, jumlah: qty });
         }
 
-        const selectedSlots = [...document.querySelectorAll('.slot-btn.selected')].map(b => b.innerText);
-        db.collection("Peminjaman").add({
-            idKelas: selectedRoom,
-            namaPemohon: localStorage.getItem("loggedInUserNama") || "Mahasiswa",
-            tanggalPinjam: document.getElementById('tanggalPinjam').value,
-            keperluan: document.getElementById('keperluan').value,
-            properti: document.getElementById('selectProperti').options[document.getElementById('selectProperti').selectedIndex].text,
-            jumlahProperti: propID ? jumlahDiminta : 0,
-            jam: selectedSlots,
-            status: "Menunggu",
-            dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            alert("Pengajuan berhasil!");
-            location.reload();
+        // Reset input dan perbarui tampilan keranjang
+        select.value = "";
+        document.getElementById('jumlahBarang').value = 1;
+        renderKeranjang();
+    }
+
+    // FUNGSI HAPUS PROPERTI DARI KERANJANG
+    function hapusProperti(idProp) {
+        keranjangProperti = keranjangProperti.filter(p => p.id !== idProp);
+        renderKeranjang();
+    }
+
+    // FUNGSI MENAMPILKAN KERANJANG DI BAWAH DROPDOWN
+    function renderKeranjang() {
+        const container = document.getElementById('keranjangContainer');
+        container.innerHTML = "";
+        keranjangProperti.forEach(p => {
+            container.innerHTML += `
+            <div class="list-properti-item">
+                <span>${p.nama} (${p.jumlah})</span>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#ef4444;" onclick="hapusProperti('${p.id}')"></i>
+            </div>`;
         });
+    }
+
+    document.getElementById('formPeminjaman').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!selectedRoom) return alert("Pilih ruangan kelas terlebih dahulu!");
+
+        const selectedSlots = [...document.querySelectorAll('.slot-btn.selected')].map(b => b.innerText);
+        if (selectedSlots.length === 0) return alert("Pilih minimal 1 slot waktu!");
+
+        // Auto-add jika ada yang mengetik input tapi lupa menekan tombol "+"
+        const currentPropID = document.getElementById('selectProperti').value;
+        if (currentPropID) {
+            tambahProperti();
+        }
+
+        const btn = document.getElementById('btnSubmit');
+        btn.innerText = "Memproses Peminjaman...";
+        btn.disabled = true;
+
+        try {
+            // Update stok properti di database jika ada properti yang dipinjam
+            for (const item of keranjangProperti) {
+                await db.collection("Properti").doc(item.id).update({
+                    jumlahTersedia: firebase.firestore.FieldValue.increment(-item.jumlah),
+                    jumlahDipinjam: firebase.firestore.FieldValue.increment(item.jumlah)
+                });
+            }
+
+            // Gabungkan nama barang agar tersimpan dalam format String, cth: "Proyektor (1), Spidol (2)"
+            let stringProperti = "Tidak ada";
+            let totalJumlahKeseluruhan = 0;
+            if (keranjangProperti.length > 0) {
+                stringProperti = keranjangProperti.map(p => `${p.nama} (${p.jumlah})`).join(", ");
+                totalJumlahKeseluruhan = keranjangProperti.reduce((sum, p) => sum + p.jumlah, 0);
+            }
+
+            // Simpan Data Peminjaman ke Database
+            await db.collection("Peminjaman").add({
+                idKelas: selectedRoom,
+                namaPemohon: localStorage.getItem("loggedInUserNama") || "Mahasiswa",
+                tanggalPinjam: document.getElementById('tanggalPinjam').value,
+                keperluan: document.getElementById('keperluan').value,
+                properti: stringProperti, // Menyimpan format "Proyektor Epson (2), Mic (1)"
+                jumlahProperti: totalJumlahKeseluruhan,
+                jam: selectedSlots,
+                status: "Menunggu",
+                dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // MENGUBAH ALERT MENJADI PINDAH KE HALAMAN SUKSES
+            window.location.href = "../sukses_peminjaman.html";
+
+        } catch (error) {
+            console.error("Error peminjaman: ", error);
+            // JIKA GAGAL/ERROR, PINDAH KE HALAMAN GAGAL
+            window.location.href = "../gagal_peminjaman.html";
+            
+            btn.innerText = "SUBMIT PEMINJAMAN";
+            btn.disabled = false;
+        }
     });
   </script>
 </body>
