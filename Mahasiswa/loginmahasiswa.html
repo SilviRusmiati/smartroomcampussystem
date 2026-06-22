@@ -196,7 +196,7 @@
         <p>Silakan masuk menggunakan akun portal Anda</p>
       </div>
 
-      <form action="dasboardmahasiswa.html" method="GET" id="formLogin">
+      <form action="dashboardmahasiswa.html" method="GET" id="formLogin">
         
         <div class="input-group">
           <label>Email atau NIM</label>
@@ -266,7 +266,7 @@
               localStorage.setItem("loggedInUserNIM", docId);
               
               alert("Login Berhasil! Selamat datang, " + dataMahasiswa.nama);
-              window.location.href = "dasboardmahasiswa.html";
+              window.location.href = "dashboardmahasiswa.html";
           } else {
               alert("Login Gagal! Password salah.");
               btn.innerText = "MASUK SEKARANG";

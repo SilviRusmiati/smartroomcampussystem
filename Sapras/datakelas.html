@@ -279,22 +279,44 @@
     });
 
     // Real-time Listener Daftar Kelas (Muncul di semua user secara live)
-    db.collection("Kelas").onSnapshot((snapshot) => {
-        let html = "";
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            html += `<tr>
-                <td><b>${data.idKelas}</b></td>
-                <td>${data.namaKelas}</td>
-                <td>${data.lokasi}</td>
-                <td>${data.kapasitas} Kursi</td>
-                <td><span class="badge badge-green">${data.status}</span></td>
-                <td><button class="btn-delete" onclick="hapusData('Kelas', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button></td>
-            </tr>`;
-        });
-        document.getElementById('tbodyKelas').innerHTML = html;
+db.collection("Kelas").onSnapshot((snapshot) => {
+    let html = "";
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        html += `<tr>
+            <td><b>${data.idKelas}</b></td>
+            <td>${data.namaKelas}</td>
+            <td>${data.lokasi}</td>
+            <td>${data.kapasitas} Kursi</td>
+            <td><span class="badge badge-green">${data.status}</span></td>
+            <td>
+                <button class="btn-delete" onclick="isiFormKelas('${data.idKelas}', '${data.namaKelas}', '${data.lokasi}', ${data.kapasitas})" style="margin-right: 15px; color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-delete" onclick="hapusData('Kelas', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+        </tr>`;
     });
+    document.getElementById('tbodyKelas').innerHTML = html;
+});
 
+function isiFormKelas(id, nama, lokasi, kapasitas) {
+    // Isi data ke form
+    document.getElementById('idKelas').value = id;
+    document.getElementById('namaKelas').value = nama;
+    document.getElementById('lokasiKelas').value = lokasi;
+    document.getElementById('kapasitasKelas').value = kapasitas;
+
+    // Kunci ID Kelas agar tidak bisa diubah saat edit (mencegah ID ganda)
+    document.getElementById('idKelas').readOnly = true; 
+    document.getElementById('idKelas').style.opacity = "0.6";
+    
+    // Ubah judul form jadi "Edit Data"
+    document.querySelector('#formKelas .section-title').innerText = "Edit Data Kelas";
+    
+    // Ganti teks tombol
+    document.getElementById('btnSimpanKelas').innerText = "Update Data Kelas";
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
     /* =======================================================
        LOGIKA CRUD 2: MASTER DATA PROPERTI (KOLEKSI: Properti)
@@ -320,27 +342,38 @@
     });
 
     // Real-time Listener Daftar Properti + Kalkulasi Matematika Live Stok Barang
-    db.collection("Properti").onSnapshot((snapshot) => {
-        let html = "";
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            
-            // Perhitungan stok otomatis live sesuai keinginanmu
-            const total = data.jumlahTotal || 0;
-            const dipinjam = data.jumlahDipinjam || 0;
-            const tersedia = total - dipinjam; // Sisa hitung otomatis
+db.collection("Properti").onSnapshot((snapshot) => {
+    let html = "";
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        
+        // Perhitungan stok otomatis live sesuai keinginanmu
+        const total = data.jumlahTotal || 0;
+        const dipinjam = data.jumlahDipinjam || 0;
+        const tersedia = total - dipinjam; // Sisa hitung otomatis
 
-            html += `<tr>
-                <td><b>${data.idProperti}</b></td>
-                <td>${data.namaProperti}</td>
-                <td><span class="badge badge-blue">${total} Unit</span></td>
-                <td><span class="badge badge-orange">${dipinjam} Unit</span></td>
-                <td><span class="badge badge-green">${tersedia} Unit</span></td>
-                <td><button class="btn-delete" onclick="hapusData('Properti', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button></td>
-            </tr>`;
-        });
-        document.getElementById('tbodyProperti').innerHTML = html;
+        html += `<tr>
+            <td><b>${data.idProperti}</b></td>
+            <td>${data.namaProperti}</td>
+            <td><span class="badge badge-blue">${total} Unit</span></td>
+            <td><span class="badge badge-orange">${dipinjam} Unit</span></td>
+            <td><span class="badge badge-green">${tersedia} Unit</span></td>
+            <td>
+                <button class="btn-delete" onclick="isiFormProperti('${data.idProperti}', '${data.namaProperti}', ${total})" style="margin-right: 15px; color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-delete" onclick="hapusData('Properti', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+        </tr>`;
     });
+    document.getElementById('tbodyProperti').innerHTML = html;
+});
+
+// Fungsi untuk mengisi form saat tombol edit Properti diklik
+function isiFormProperti(id, nama, total) {
+    document.getElementById('idProperti').value = id;
+    document.getElementById('namaProperti').value = nama;
+    document.getElementById('totalProperti').value = total;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
     // Fungsi Global Hapus Data Master Inventaris
     function hapusData(collectionName, id) {
