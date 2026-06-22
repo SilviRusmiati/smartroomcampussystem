@@ -312,7 +312,7 @@
             btn.disabled = false;
         }).catch(err => { alert("Gagal: " + err.message); btn.disabled = false; });
     });
-
+// Real-time Listener Daftar Kelas
     db.collection("Kelas").onSnapshot((snapshot) => {
         let html = "";
         snapshot.forEach((doc) => {
@@ -324,8 +324,10 @@
                 <td>${data.kapasitas} Kursi</td>
                 <td><span class="badge badge-green">${data.status}</span></td>
                 <td>
-                    <button class="btn-delete" onclick="isiFormKelas('${data.idKelas}', '${data.namaKelas}', '${data.lokasi}', ${data.kapasitas})" style="margin-right: 15px; color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
-                    <button class="btn-delete" onclick="hapusData('Kelas', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <button class="btn-delete" onclick="isiFormKelas('${data.idKelas}', '${data.namaKelas}', '${data.lokasi}', ${data.kapasitas})" style="color: #3b82f6;"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-delete" onclick="hapusData('Kelas', '${doc.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
                 </td>
             </tr>`;
         });
