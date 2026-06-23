@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard - Smart Room</title>
+  <title>Dashboard Dosen - Smart Room</title>
+
+  <script>
+    // Auth guard: cek apakah dosen sudah login
+    if (!localStorage.getItem("loggedInDosenNIDN")) {
+      window.location.href = "logindosen.html";
+    }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,7 +50,7 @@
     /* KONTEN UTAMA */
     .main-content {
       flex: 1; margin-left: 260px; 
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("../bg.biru.jpeg");
       background-size: cover; background-position: center; background-attachment: fixed;
       padding: 40px 60px; display: flex; flex-direction: column; gap: 25px; min-height: 100vh;
     }
@@ -58,6 +65,13 @@
     
     .card-title { font-size: 1.1rem; color: #ffffff; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
 
+    /* SCROLLBAR UNTUK TABEL */
+    .table-wrapper { max-height: 280px; overflow-y: auto; padding-right: 5px; }
+    .table-wrapper::-webkit-scrollbar { width: 6px; }
+    .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .table-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); border-radius: 10px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.7); }
+
     .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0; color: #ffffff; text-align: left; }
     .schedule-table th { padding: 12px; font-weight: 700; font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; }
     .schedule-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
@@ -66,9 +80,12 @@
     .green { background: #22c55e; }
     .red { background: #ef4444; }
 
-    .notif-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
+    .notif-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; color: #ffffff; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; border-left: 4px solid #22c55e; }
+    .notif-item.rejected { border-left-color: #ef4444; }
     .notif-item i { color: #f59e0b; margin-top: 4px; }
-    .notif-item p { font-size: 0.95rem; color: #ffffff; line-height: 1.4; }
+    .notif-item.rejected i { color: #ef4444; }
+    .notif-item.approved i { color: #22c55e; }
+    .notif-item p { font-size: 0.95rem; }
 
     /* MODAL LOGOUT */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
@@ -79,7 +96,7 @@
     .modal-actions { display: flex; gap: 15px; }
     .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
     .btn-cancel:hover { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; }
-    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
     .btn-confirm:hover { background: #dc2626; border-color: #dc2626; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popIn { 0% { opacity: 0; transform: scale(0.8) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
@@ -94,7 +111,7 @@
 
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <img src="Logo.png" alt="Logo">
+      <img src="../Logo.png" alt="Logo">
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
@@ -102,81 +119,70 @@
     </div>
     
     <ul class="sidebar-menu">
-      <li class="active"><a href="dasboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-      <li><a href="dashboardjadwal.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
-      <li><a href="ketersediaan.html"><i class="fa-solid fa-building"></i> Ketersediaan Kelas</a></li>
-      <li><a href="pengaturan.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
-      <li><a href="peminjaman.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
+      <li class="active"><a href="dashboarddosen.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="dashboardjadwaldosen.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
+      <li><a href="pengaturandosen.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
+      <li><a href="peminjamandosen.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
       <li class="logout-item"><a onclick="showLogoutModal()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
     </ul>
   </aside>
 
   <main class="main-content">
     <div class="header-section">
-      <p id="greetingText">Selamat datang</p>
-      <h1>Dashboard</h1>
+      <p id="greetingText">Memuat...</p>
+      <h1>Dashboard Dosen</h1>
     </div>
 
     <div class="dashboard-grid">
       <section class="glass-card">
         <h3 class="card-title">Ringkasan Ketersediaan</h3>
-        <table class="schedule-table">
-          <thead><tr><th>Kelas</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Kelas A</td><td><span class="badge green">Tersedia</span></td></tr>
-            <tr><td>Kelas B</td><td><span class="badge green">Tersedia</span></td></tr>
-            <tr><td>Lab. Komputer</td><td><span class="badge red">Penuh</span></td></tr>
-            <tr><td>Lab. Biologi</td><td><span class="badge red">Penuh</span></td></tr>
-          </tbody>
-        </table>
+        <div class="table-wrapper">
+          <table class="schedule-table">
+            <thead><tr><th>Kelas</th><th>Status</th></tr></thead>
+            <tbody id="liveStatusKelas"><tr><td>Memuat data...</td></tr></tbody>
+          </table>
+        </div>
       </section>
 
       <section class="glass-card">
-        <h3 class="card-title">Jadwal Mendatang</h3>
+        <h3 class="card-title">Jadwal Mengajar</h3>
         <table class="schedule-table">
-          <thead><tr><th>Tanggal</th><th>Waktu</th><th>Kegiatan</th></tr></thead>
-          <tbody>
-            <tr><td>20 Jun</td><td>08.00</td><td>Rapat Evaluasi</td></tr>
-            <tr><td>21 Jun</td><td>13.00</td><td>Praktikum</td></tr>
-          </tbody>
+          <thead><tr><th>Tanggal</th><th>Kelas</th><th>Keperluan</th></tr></thead>
+          <tbody id="liveJadwal"><tr><td>Belum ada jadwal mendatang</td></tr></tbody>
         </table>
       </section>
     </div>
 
     <section class="glass-card">
       <h3 class="card-title">Notifikasi Penting</h3>
-      <div class="notif-item">
-        <i class="fa-solid fa-bell"></i>
-        <p>Penggunaan <strong>Kelas A</strong> akan dimulai dalam 30 menit.</p>
-      </div>
-      <div class="notif-item">
-        <i class="fa-solid fa-bell"></i>
-        <p>Jadwal praktikum di <strong>Lab. Biologi</strong> dimulai pukul 10.00.</p>
+      <div id="liveNotif">
+        <div class="notif-item"><i class="fa-solid fa-bell"></i><p>Tidak ada notifikasi baru.</p></div>
       </div>
     </section>
   </main>
 
+  <!-- MODAL LOGOUT -->
   <div id="logoutModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
       <h2 class="modal-title">Konfirmasi Keluar</h2>
-      <p class="modal-text">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari sistem?</p>
+      <p class="modal-text">Yakin ingin keluar?</p>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="hideLogoutModal()">Batal</button>
-        <a href="index.html" class="btn-confirm">Ya, Logout</a>
+        <button class="btn-confirm" onclick="prosesLogout()">Ya, Logout</button>
       </div>
     </div>
   </div>
-
-  <script>
-    function showLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
-    function hideLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
-  </script>
 
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <script>
+    // Fungsi modal logout
+    function showLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
+    function hideLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
+
+    // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
       authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
@@ -190,18 +196,89 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const nim = localStorage.getItem("loggedInUserNIM");
-    const nidn = localStorage.getItem("loggedInUserNIDN");
+    // Mapping nama ruangan agar tidak muncul ID (seperti "R_0001") di dashboard
+    let namaRuanganMap = {};
+    db.collection("Kelas").get().then(snapshot => {
+        snapshot.forEach(doc => {
+            namaRuanganMap[doc.id] = doc.data().namaKelas;
+        });
+    });
 
-    if (nim) {
-        db.collection("Users").doc(nim).get().then((doc) => {
-            if (doc.exists) document.getElementById('greetingText').innerText = "Selamat datang, " + doc.data().nama;
+    // Ambil data dosen yang login
+    const nidn = localStorage.getItem("loggedInDosenNIDN");
+    let namaDosen = localStorage.getItem("loggedInDosenNama");
+
+    // Ambil nama dosen dari Firestore & simpan di localStorage
+    if (nidn && !namaDosen) {
+        db.collection("Dosen").doc(nidn).get().then(doc => {
+            if (doc.exists) {
+                namaDosen = doc.data().nama;
+                localStorage.setItem("loggedInDosenNama", namaDosen);
+                document.getElementById('greetingText').innerText = "Selamat datang, " + namaDosen;
+            }
         });
-    } else if (nidn) {
-        db.collection("Dosen").doc(nidn).get().then((doc) => {
-            if (doc.exists) document.getElementById('greetingText').innerText = "Selamat datang, " + doc.data().nama;
-        });
+    } else {
+        document.getElementById('greetingText').innerText = "Selamat datang, " + (namaDosen || "Dosen");
     }
+
+    // Fungsi proses logout
+    function prosesLogout() { 
+        localStorage.removeItem("loggedInDosenNIDN"); 
+        localStorage.removeItem("loggedInDosenNama"); 
+        window.location.href = "../index.html"; 
+    }
+
+    // Load Ruangan Real-time
+    db.collection("Kelas").onSnapshot(snap => {
+        let h = "<thead><tr><th>Kelas</th><th>Status</th></tr></thead>";
+        snap.forEach(d => { 
+            const v = d.data(); 
+            h += `<tr><td>${v.namaKelas}</td><td><span class="badge ${v.status=='Tersedia'?'green':'red'}">${v.status}</span></td></tr>`; 
+        });
+        document.getElementById('liveStatusKelas').innerHTML = h;
+    });
+
+    // Load Jadwal Mengajar Dosen (dari koleksi Peminjaman yang statusnya Diterima)
+    db.collection("Peminjaman").where("namaPemohon", "==", namaDosen || "").where("status", "==", "Diterima").onSnapshot(snap => {
+        let h = "<thead><tr><th>Tanggal</th><th>Kelas</th><th>Keperluan</th></tr></thead>";
+        snap.forEach(d => { 
+            const v = d.data(); 
+            const namaRuanganAsli = namaRuanganMap[v.idKelas] || v.idKelas; 
+            h += `<tr>
+                    <td style="font-weight:700;">${v.tanggalPinjam}</td>
+                    <td>${namaRuanganAsli}</td>
+                    <td>${v.keperluan}</td>
+                  </tr>`; 
+        });
+        document.getElementById('liveJadwal').innerHTML = h || "<tr><td colspan='3'>Belum ada jadwal mendatang</td></tr>";
+    });
+
+    // Load Notifikasi Dosen (peminjaman yang Diterima/Ditolak)
+    db.collection("Peminjaman").where("namaPemohon", "==", namaDosen || "").where("status", "in", ["Diterima", "Ditolak"]).onSnapshot(snap => {
+        let notifHTML = "";
+        snap.forEach(d => {
+            const v = d.data();
+            const namaRuanganAsli = namaRuanganMap[v.idKelas] || v.idKelas; 
+            
+            if (v.status === "Diterima") {
+                notifHTML += `<div class="notif-item approved">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <p>Pengajuan peminjaman <b>${namaRuanganAsli}</b> untuk tanggal ${v.tanggalPinjam} telah <b>Disetujui</b> oleh Sapras.</p>
+                              </div>`;
+            } else if (v.status === "Ditolak") {
+                notifHTML += `<div class="notif-item rejected">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                                <p>Mohon maaf, pengajuan peminjaman <b>${namaRuanganAsli}</b> untuk tanggal ${v.tanggalPinjam} telah <b>Ditolak</b>.</p>
+                              </div>`;
+            }
+        });
+
+        if (notifHTML !== "") {
+            document.getElementById('liveNotif').innerHTML = notifHTML;
+        } else {
+            document.getElementById('liveNotif').innerHTML = `<div class="notif-item"><i class="fa-solid fa-bell"></i><p>Tidak ada notifikasi baru.</p></div>`;
+        }
+    });
   </script>
 </body>
 </html>

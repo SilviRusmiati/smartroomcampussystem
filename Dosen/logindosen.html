@@ -69,7 +69,7 @@
     .login-wrapper {
       flex: 1; display: flex; align-items: center; justify-content: center;
       padding: 40px 20px;
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("../bg.biru.jpeg");
       background-size: cover; background-position: center; background-repeat: no-repeat;
     }
 
@@ -143,15 +143,15 @@
 <body>
 
   <header class="navbar">
-    <a href="index.html" class="brand">
-      <div class="logo-icon"><img src="Logo.png" alt="Logo SRCS"></div>
+    <a href="../index.html" class="brand">
+      <div class="logo-icon"><img src="../Logo.png" alt="Logo SRCS"></div>
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
       </div>
     </a>
     
-    <a href="index.html" class="btn-back">
+    <a href="../index.html" class="btn-back">
       <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
     </a>
   </header>
@@ -167,10 +167,10 @@
       <form id="formLoginDosen">
         
         <div class="input-group">
-          <label>NIDN</label>
+          <label>Email atau NIDN</label>
           <div class="input-wrapper">
-            <i class="fa-solid fa-id-card input-icon"></i>
-            <input type="text" id="loginNidn" class="input-glass" placeholder="Masukkan NIDN Anda" required>
+            <i class="fa-regular fa-envelope input-icon"></i>
+            <input type="text" id="loginNidn" class="input-glass" placeholder="Contoh: silvi@kampus.ac.id" required>
           </div>
         </div>
 
@@ -183,7 +183,7 @@
         </div>
 
         <div class="forgot-pass">
-          <a href="lupapassword.html">Lupa Password?</a>
+          <a href="lupapasword_dosen.html">Lupa Password?</a>
         </div>
 
         <button type="submit" id="btnLogin" class="btn-submit">LOGIN DOSEN</button>
@@ -197,6 +197,8 @@
     </div>
   </main>
 
+  <!-- CryptoJS harus di-load sebelum digunakan untuk hash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -215,43 +217,67 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // 2. Proses Login Dosen
+    // 2. Event Listener Form Login
     document.getElementById('formLoginDosen').addEventListener('submit', function(e) {
-      e.preventDefault(); 
+        e.preventDefault();
 
-      const btn = document.getElementById('btnLogin');
-      btn.innerText = "MEMERIKSA DATA...";
-      btn.disabled = true;
+        const btn = document.getElementById('btnLogin');
+        const userInput = document.getElementById('loginNidn').value.trim();
+        const passInput = document.getElementById('loginPassword').value; 
+        
+        if (!userInput || !passInput) {
+            alert("Harap isi NIDN/Email dan Password!");
+            return;
+        }
 
-      const nidn = document.getElementById('loginNidn').value;
-      const pass = document.getElementById('loginPassword').value;
+        btn.innerText = "MEMERIKSA DATA...";
+        btn.disabled = true;
 
-      // Cek di koleksi "Dosen"
-      db.collection("Dosen").doc(nidn).get().then((doc) => {
-          if (doc.exists) {
-              const data = doc.data();
-              if (data.password === pass) {
-                  // Simpan sesi login
-                  localStorage.setItem("loggedInUserNIDN", nidn);
-                  alert("Selamat Datang, " + data.nama);
-                  window.location.href = "dasboard.html";
-              } else {
-                  alert("Password salah!");
-                  btn.innerText = "LOGIN DOSEN";
-                  btn.disabled = false;
-              }
-          } else {
-              alert("NIDN tidak terdaftar.");
-              btn.innerText = "LOGIN DOSEN";
-              btn.disabled = false;
-          }
-      }).catch((error) => {
-          alert("Error: " + error.message);
-          btn.innerText = "LOGIN DOSEN";
-          btn.disabled = false;
-      });
+        // Fungsi untuk verifikasi password (pakai hash)
+        function cekPassword(data, docId) {
+            const hashedInput = CryptoJS.SHA256(passInput).toString();
+            if (data.password === hashedInput) {
+                localStorage.setItem("loggedInDosenNIDN", docId);
+                alert("Selamat Datang, " + data.nama + "!");
+                window.location.href = "dashboarddosen.html";
+            } else {
+                alert("Login Gagal! Password salah.");
+                btn.innerText = "LOGIN DOSEN";
+                btn.disabled = false;
+            }
+        }
+
+        // Logic Query: bisa pakai email atau NIDN
+        let promise;
+        if (userInput.includes('@')) {
+            // Cari berdasarkan email
+            promise = db.collection("Dosen").where("email", "==", userInput).get().then(snapshot => {
+                if (!snapshot.empty) return { data: snapshot.docs[0].data(), id: snapshot.docs[0].id };
+                return null;
+            });
+        } else {
+            // Cari berdasarkan NIDN
+            promise = db.collection("Dosen").doc(userInput).get().then(doc => {
+                if (doc.exists) return { data: doc.data(), id: doc.id };
+                return null;
+            });
+        }
+
+        promise.then(result => {
+            if (result) {
+                cekPassword(result.data, result.id);
+            } else {
+                alert("Akun tidak ditemukan!");
+                btn.innerText = "LOGIN DOSEN";
+                btn.disabled = false;
+            }
+        }).catch(err => {
+            console.error(err);
+            alert("Terjadi kesalahan sistem, coba lagi.");
+            btn.innerText = "LOGIN DOSEN";
+            btn.disabled = false;
+        });
     });
   </script>
-
 </body>
 </html>

@@ -73,7 +73,7 @@
     .register-section {
       flex: 1; display: flex; align-items: center; justify-content: center;
       padding: 40px 20px;
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("../bg.biru.jpeg");
       background-size: cover; background-position: center; background-repeat: no-repeat;
     }
 
@@ -176,8 +176,8 @@
 <body>
 
   <header class="navbar">
-    <a href="index.html" class="brand">
-      <div class="logo-icon"><img src="Logo.png" alt="Logo"></div>
+    <a href="../index.html" class="brand">
+      <div class="logo-icon"><img src="../Logo.png" alt="Logo"></div>
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
@@ -237,33 +237,6 @@
           </div>
         </div>
 
-        <div class="input-row">
-          <div class="input-group">
-            <label for="jabatan">Jabatan</label>
-            <div class="select-wrapper">
-              <select id="jabatan" name="jabatan" class="input-glass" required>
-                <option value="" disabled selected>Pilih Jabatan</option>
-                <option value="Dosen">Dosen</option>
-                <option value="Asisten Ahli">Asisten Ahli</option>
-                <option value="Lektor">Lektor</option>
-                <option value="Lektor Kepala">Lektor Kepala</option>
-                <option value="Guru Besar">Guru Besar</option>
-              </select>
-            </div>
-          </div>
-          <div class="input-group">
-            <label for="pendidikan">Pendidikan</label>
-            <div class="select-wrapper">
-              <select id="pendidikan" name="pendidikan" class="input-glass" required>
-                <option value="" disabled selected>Pilih Jenjang</option>
-                <option value="S2 / Magister">S2 / Magister</option>
-                <option value="S3 / Doktor">S3 / Doktor</option>
-                <option value="Profesor">Profesor</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
         <hr class="divider">
         <div class="section-label">Keamanan Akun</div>
         <div class="input-group">
@@ -294,6 +267,8 @@
     </div>
   </main>
 
+  <!-- CryptoJS HARUS di-load sebelum digunakan -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -337,6 +312,9 @@
       btn.disabled = true;
 
       const nidn = document.getElementById('nidn').value;
+      
+      // Hash password pakai SHA-256
+      const hashedPassword = CryptoJS.SHA256(pw).toString();
 
       db.collection("Dosen").doc(nidn).set({
           nidn: nidn,
@@ -345,9 +323,7 @@
           email: document.getElementById('email').value,
           no_hp: document.getElementById('no_hp').value,
           jurusan: document.getElementById('jurusan').value,
-          jabatan: document.getElementById('jabatan').value,
-          pendidikan: document.getElementById('pendidikan').value,
-          password: pw,
+          password: hashedPassword,
           role: "dosen",
           dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
       })

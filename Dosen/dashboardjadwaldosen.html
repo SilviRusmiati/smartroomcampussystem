@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jadwal - Smart Room</title>
+  <title>Jadwal Dosen - Smart Room</title>
+
+  <script>
+    // Auth guard: cek apakah dosen sudah login
+    if (!localStorage.getItem("loggedInDosenNIDN")) {
+      window.location.href = "logindosen.html";
+    }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,7 +51,7 @@
     /* KONTEN UTAMA */
     .main-content {
       flex: 1; margin-left: 260px; 
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.25)), url("bg.biru.jpeg");
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.15), rgba(30, 41, 59, 0.25)), url("../bg.biru.jpeg");
       background-size: cover; background-position: center; background-attachment: fixed;
       padding: 40px 60px; display: flex; flex-direction: column; min-height: 100vh;
     }
@@ -63,10 +70,20 @@
 
     /* TABEL */
     .table-title { color: #ffffff; font-weight: 800; font-size: 1.2rem; margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+    
+    /* SCROLLBAR UNTUK TABEL */
+    .table-wrapper { max-height: 450px; overflow-y: auto; padding-right: 5px; }
+    .table-wrapper::-webkit-scrollbar { width: 6px; }
+    .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .table-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); border-radius: 10px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.7); }
+
     .schedule-table { width: 100%; border-collapse: collapse; color: #ffffff; }
-    .schedule-table th { padding: 12px; font-weight: 700; font-size: 0.75rem; border-bottom: 2px solid var(--accent); color: #fff; text-transform: uppercase; }
+    .schedule-table th { padding: 12px; font-weight: 700; font-size: 0.75rem; border-bottom: 2px solid var(--accent); color: #fff; text-transform: uppercase; text-align: left; }
     .schedule-table td { padding: 16px 12px; border-bottom: 1px solid var(--accent); font-size: 0.95rem; }
-    .status-badge { background: #22c55e; color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+    .status-badge { color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+    .green { background: #22c55e; }
+    .red { background: #ef4444; }
 
     /* MODAL LOGOUT */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
@@ -77,7 +94,7 @@
     .modal-actions { display: flex; gap: 15px; }
     .btn-cancel { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.5); color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
     .btn-cancel:hover { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; }
-    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .btn-confirm { flex: 1; background: #ef4444; border: 2px solid #ef4444; color: #ffffff; border-radius: 50px; padding: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
     .btn-confirm:hover { background: #dc2626; border-color: #dc2626; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popIn { 0% { opacity: 0; transform: scale(0.8) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
@@ -93,18 +110,17 @@
 
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <img src="Logo.png" alt="Logo">
+      <img src="../Logo.png" alt="Logo">
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
       </div>
     </div>
     <ul class="sidebar-menu">
-      <li><a href="dasboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-      <li class="active"><a href="dashboardjadwal.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
-      <li><a href="ketersediaan.html"><i class="fa-solid fa-building"></i> Ketersediaan Kelas</a></li>
-      <li><a href="pengaturan.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
-      <li><a href="peminjaman.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
+      <li><a href="dashboarddosen.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li class="active"><a href="dashboardjadwaldosen.html"><i class="fa-solid fa-calendar-days"></i> Jadwal</a></li>
+      <li><a href="pengaturandosen.html"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
+      <li><a href="peminjamandosen.html"><i class="fa-solid fa-thumbtack"></i> Peminjaman Kelas</a></li>
       <li class="logout-item"><a onclick="showLogoutModal()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
     </ul>
   </aside>
@@ -118,49 +134,120 @@
     <div class="top-controls">
       <div class="glass-card">
         <div class="pill-label"><i class="fa-regular fa-calendar-check"></i> Sistem Jadwal</div>
-        <p>Kelola, pantau, dan lihat seluruh reservasi fasilitas kampus secara real-time.</p>
+        <p style="color: white;">Lihat reservasi kelas yang sudah disetujui Sapras.</p>
       </div>
-
       <div class="glass-card" style="display: flex; align-items: center;">
         <div class="search-wrapper">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
-          <input type="text" placeholder="Cari berdasarkan ruangan, kegiatan...">
+          <input type="text" id="cariJadwal" placeholder="Cari ruangan atau kegiatan...">
         </div>
       </div>
     </div>
 
     <div class="glass-card">
-      <div class="table-title">Daftar Reservasi Aktif</div>
-      <table class="schedule-table">
-        <thead>
-          <tr><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>Kegiatan</th><th>Pemesan</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>20 Juni 2026</td><td>08.00 - 10.00</td><td>Kelas A</td><td>Rapat Evaluasi HIMATIF</td><td>Sekretaris HIMATIF</td><td><span class="status-badge">Terjadwal</span></td></tr>
-          <tr><td>21 Juni 2026</td><td>13.00 - 15.00</td><td>Lab. Komputer</td><td>Praktikum Basis Data</td><td>KOSMA TI 24</td><td><span class="status-badge">Terjadwal</span></td></tr>
-          <tr><td>23 Juni 2026</td><td>09.00 - 11.00</td><td>Kelas B</td><td>Algoritma & Struktur Data</td><td>KOSMA TI 25</td><td><span class="status-badge">Terjadwal</span></td></tr>
-          <tr><td>24 Juni 2026</td><td>10.00 - 12.00</td><td>Lab. Biologi</td><td>Praktikum Mikrobiologi</td><td>KOSMA TI 22</td><td><span class="status-badge">Terjadwal</span></td></tr>
-          <tr><td>27 Juni 2026</td><td>10.00 - 13.00</td><td>Sekretariat</td><td>Rapat Evaluasi HMPGSD</td><td>Sekretaris HMPGSD</td><td><span class="status-badge">Terjadwal</span></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="table-title">Daftar Reservasi Disetujui</div>
+      
+      <div class="table-wrapper">
+        <table class="schedule-table">
+          <thead>
+            <tr><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>Kegiatan</th><th>Pemesan</th><th>Status</th></tr>
+          </thead>
+          <tbody id="tbodyJadwal">
+            </tbody>
+        </table>
+      </div>
+      </div>
   </main>
 
+  <!-- MODAL LOGOUT -->
   <div id="logoutModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
       <h2 class="modal-title">Konfirmasi Keluar</h2>
-      <p class="modal-text">Apakah Anda yakin ingin mengakhiri sesi dan keluar dari sistem?</p>
+      <p class="modal-text">Yakin ingin keluar?</p>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="hideLogoutModal()">Batal</button>
-        <a href="index.html" class="btn-confirm">Ya, Logout</a>
+        <button class="btn-confirm" onclick="prosesLogout()">Ya, Logout</button>
       </div>
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
   <script>
+    // Fungsi modal logout
     function showLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
     function hideLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
+
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Fungsi proses logout
+    function prosesLogout() { 
+        localStorage.removeItem("loggedInDosenNIDN"); 
+        localStorage.removeItem("loggedInDosenNama"); 
+        window.location.href = "../index.html"; 
+    }
+
+    let dataJadwal = [];
+
+    // Mengambil semua data peminjaman agar status ditolak/diterima bisa muncul
+    db.collection("Peminjaman").onSnapshot(snapshot => {
+        dataJadwal = [];
+        snapshot.forEach(doc => {
+            let item = doc.data();
+            dataJadwal.push(item);
+        });
+        renderJadwal(dataJadwal);
+    });
+
+    function renderJadwal(data) {
+        const tbody = document.getElementById('tbodyJadwal');
+        tbody.innerHTML = data.map(item => {
+            // Memastikan nama ruangan muncul (cek field namaKelas atau idKelas)
+            const namaRuangan = item.namaKelas || item.idKelas || "Tidak diketahui";
+            
+            // Logika warna status
+            const statusClass = item.status === "Diterima" ? "green" : "red";
+            
+            return `
+            <tr>
+                <td>${item.tanggalPinjam || '-'}</td>
+                <td>${item.jam ? item.jam.join(', ') : '-'}</td>
+                <td>${namaRuangan}</td>
+                <td>${item.keperluan || '-'}</td>
+                <td>${item.namaPemohon || '-'}</td>
+                <td><span class="status-badge ${statusClass}">${item.status || 'Pending'}</span></td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    // CSS Tambahan untuk badge merah (Ditolak)
+    const style = document.createElement('style');
+    style.innerHTML = `.red { background: #ef4444 !important; }`;
+    document.head.appendChild(style);
+
+    // Fungsi search/filter
+    document.getElementById('cariJadwal').addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        renderJadwal(dataJadwal.filter(i => 
+            (i.namaKelas && i.namaKelas.toLowerCase().includes(val)) || 
+            (i.keperluan && i.keperluan.toLowerCase().includes(val)) ||
+            (i.namaPemohon && i.namaPemohon.toLowerCase().includes(val))
+        ));
+    });
   </script>
 </body>
 </html>
