@@ -239,8 +239,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
-
-  <script>
+<script>
   // 1. Konfigurasi Database Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
@@ -255,57 +254,61 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // 2. Fungsi intercept submit form
+  // 2. Fungsi Utama Login
   document.getElementById('formLoginSapras').addEventListener('submit', function(e) {
     e.preventDefault();
 
     const btn = document.getElementById('btnLogin');
-    btn.innerText = "MEMERIKSA DATA...";
-    btn.disabled = true;
-
     const userInput = document.getElementById('loginUser').value.trim();
     const passInput = document.getElementById('loginPassword').value;
 
-    // Sub-fungsi yang sudah diperbarui
-    function prosesLoginSukses(dataSapras, docId) {
-        // --- LOGIKA HASHING ---
-        // Kita hash password yang diketik user terlebih dahulu
-        const hashedInput = CryptoJS.SHA256(passInput).toString();
+    // Reset UI ke status loading
+    btn.innerText = "MEMERIKSA DATA...";
+    btn.disabled = true;
 
-        // Bandingkan HASH dengan HASH (bukan hash dengan teks biasa)
-        if (dataSapras.password === hashedInput) {
-            localStorage.setItem("loggedInUserSaprasNIP", docId);
-            alert("Login Berhasil! Selamat datang petugas, " + dataSapras.nama);
-            window.location.href = "dashboardsapras.html";
-        } else {
-            alert("Login Gagal! Password salah.");
-            btn.innerText = "LOGIN Sapras";
-            btn.disabled = false;
-        }
-    }
+    // Fungsi helper untuk verifikasi password
+    const verifikasiData = (dataSapras, docId) => {
+      const hashedInput = CryptoJS.SHA256(passInput).toString();
+      
+      if (dataSapras.password === hashedInput) {
+        localStorage.setItem("loggedInUserSaprasNIP", docId);
+        alert("Login Berhasil! Selamat datang, " + dataSapras.nama);
+        window.location.href = "dashboardsapras.html";
+      } else {
+        alert("Login Gagal! Password salah.");
+        btn.innerText = "LOGIN Sapras";
+        btn.disabled = false;
+      }
+    };
 
-    // Deteksi otomatis format input
+    // Fungsi penanganan error (agar UI tidak macet)
+    const handleLoginError = (msg) => {
+      alert("Login Gagal! " + msg);
+      btn.innerText = "LOGIN Sapras";
+      btn.disabled = false;
+    };
+
+    // Eksekusi Query
     if (userInput.includes('@')) {
-        db.collection("Sapras").where("email", "==", userInput).get().then((querySnapshot) => {
-            if (!querySnapshot.empty) {
-                const doc = querySnapshot.docs[0];
-                prosesLoginSukses(doc.data(), doc.id);
-            } else {
-                alert("Login Gagal! Akun dengan email tersebut tidak ditemukan.");
-                btn.innerText = "LOGIN Sapras";
-                btn.disabled = false;
-            }
-        }).catch((err) => { console.error(err); btn.disabled = false; btn.innerText = "LOGIN Sapras"; });
+      db.collection("Sapras").where("email", "==", userInput).get()
+        .then((snapshot) => {
+          if (!snapshot.empty) {
+            verifikasiData(snapshot.docs[0].data(), snapshot.docs[0].id);
+          } else {
+            handleLoginError("Akun email tidak ditemukan.");
+          }
+        })
+        .catch(() => handleLoginError("Terjadi kesalahan koneksi."));
     } else {
-        db.collection("Sapras").doc(userInput).get().then((doc) => {
-            if (doc.exists) {
-                prosesLoginSukses(doc.data(), doc.id);
-            } else {
-                alert("Login Gagal! Akun dengan NIP tersebut tidak terdaftar.");
-                btn.innerText = "LOGIN Sapras";
-                btn.disabled = false;
-            }
-        }).catch((err) => { console.error(err); btn.disabled = false; btn.innerText = "LOGIN Sapras"; });
+      db.collection("Sapras").doc(userInput).get()
+        .then((doc) => {
+          if (doc.exists) {
+            verifikasiData(doc.data(), doc.id);
+          } else {
+            handleLoginError("NIP tidak terdaftar.");
+          }
+        })
+        .catch(() => handleLoginError("Terjadi kesalahan koneksi."));
     }
   });
 </script>
