@@ -231,9 +231,9 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-  <script>
-    // 1. Konfigurasi Firebase dari akunmu
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+    // 1. Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
       authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
@@ -249,100 +249,63 @@
 
     // 2. Event Listener Form Login
     document.getElementById('formLogin').addEventListener('submit', function(e) {
-      e.preventDefault(); // Mencegah reload halaman dari HTML bawaan
+        e.preventDefault();
 
-      const btn = document.getElementById('btnLogin');
-      btn.innerText = "MEMERIKSA DATA...";
-      btn.disabled = true;
+        const btn = document.getElementById('btnLogin');
+        const userInput = document.getElementById('loginNim').value.trim();
+        const passInput = document.getElementById('loginPassword').value; 
+        
+        if (!userInput || !passInput) {
+            alert("Harap isi NIM dan Password!");
+            return;
+        }
 
-      // Ambil nilai dan hilangkan spasi kosong di awal/akhir
-      const userInput = document.getElementById('loginNim').value.trim();
-      const passInput = document.getElementById('loginPassword').value;
+        btn.innerText = "MEMERIKSA DATA...";
+        btn.disabled = true;
 
-      // Fungsi internal untuk memverifikasi password dan mengarahkan ke dashboard
-      function prosesLoginSukses(dataMahasiswa, docId) {
-          if (dataMahasiswa.password === passInput) {
-              // Simpan NIM (docId) di memori browser sebagai penanda sesi
-              localStorage.setItem("loggedInUserNIM", docId);
-              
-              alert("Login Berhasil! Selamat datang, " + dataMahasiswa.nama);
-              window.location.href = "dashboardmahasiswa.html";
-          } else {
-              alert("Login Gagal! Password salah.");
-              btn.innerText = "MASUK SEKARANG";
-              btn.disabled = false;
-          }
-      }
-
-      // Deteksi otomatis: Jika ada tanda "@", berarti dia login menggunakan Email
-if (userInput.includes('@')) {
-    db.collection("Users").where("email", "==", userInput).get().then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-            // Ambil data pertama yang cocok dengan email tersebut
-            const doc = querySnapshot.docs[0];
-            const data = doc.data();
-
-            // 1. Ambil password dari input login
-            const passInput = document.getElementById('password').value;
-
-            // 2. Hash password inputan user untuk dibandingkan
+        // Fungsi untuk verifikasi
+        function cekPassword(data, docId) {
             const hashedInput = CryptoJS.SHA256(passInput).toString();
-
-            // 3. Verifikasi apakah password cocok dengan yang ada di database
             if (data.password === hashedInput) {
-                prosesLoginSukses(data, doc.id);
+                localStorage.setItem("loggedInUserNIM", docId);
+                alert("Login Berhasil! Selamat datang.");
+                window.location.href = "dashboardmahasiswa.html";
             } else {
                 alert("Login Gagal! Password salah.");
                 btn.innerText = "MASUK SEKARANG";
                 btn.disabled = false;
             }
-        } else {
-            alert("Login Gagal! Akun dengan email tersebut tidak terdaftar.");
-            btn.innerText = "MASUK SEKARANG";
-            btn.disabled = false;
         }
-    }).catch((error) => {
-        console.error("Error getting document:", error);
-        alert("Terjadi kesalahan sistem saat mencoba login.");
-        btn.innerText = "MASUK SEKARANG";
-        btn.disabled = false;
-    });
-}
-      // Jika tidak ada tanda "@", berarti dia login menggunakan NIM
-else {
-    db.collection("Users").doc(userInput).get().then((doc) => {
-        if (doc.exists) {
-            const data = doc.data();
-            
-            // 1. Ambil password dari input login
-            const passInput = document.getElementById('password').value;
-            
-            // 2. Hash password inputan user untuk dibandingkan
-            const hashedInput = CryptoJS.SHA256(passInput).toString();
-            
-            // 3. Verifikasi apakah password cocok dengan yang ada di database
-            if (data.password === hashedInput) {
-                prosesLoginSukses(data, doc.id);
+
+        // Logic Query menggunakan Promise yang benar
+        let promise;
+        if (userInput.includes('@')) {
+            promise = db.collection("Users").where("email", "==", userInput).get().then(snapshot => {
+                if (!snapshot.empty) return { data: snapshot.docs[0].data(), id: snapshot.docs[0].id };
+                return null;
+            });
+        } else {
+            promise = db.collection("Users").doc(userInput).get().then(doc => {
+                if (doc.exists) return { data: doc.data(), id: doc.id };
+                return null;
+            });
+        }
+
+        promise.then(result => {
+            if (result) {
+                cekPassword(result.data, result.id);
             } else {
-                alert("Login Gagal! Password salah.");
+                alert("Akun tidak ditemukan!");
                 btn.innerText = "MASUK SEKARANG";
                 btn.disabled = false;
             }
-        } else {
-            alert("Login Gagal! Akun dengan NIM tersebut tidak terdaftar.");
+        }).catch(err => {
+            console.error(err);
+            alert("Terjadi kesalahan sistem, coba lagi.");
             btn.innerText = "MASUK SEKARANG";
             btn.disabled = false;
-        }
-    }).catch((error) => {
-        console.error("Error getting document:", error);
-        alert("Terjadi kesalahan sistem saat mencoba login.");
-        btn.innerText = "MASUK SEKARANG";
-        btn.disabled = false;
+        });
     });
-}
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-
+</script>
 </body>
 </html>
