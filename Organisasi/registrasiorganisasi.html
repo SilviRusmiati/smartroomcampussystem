@@ -73,14 +73,14 @@
     .register-section {
       flex: 1; display: flex; align-items: center; justify-content: center;
       padding: 40px 20px;
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("../bg.biru.jpeg");
       background-size: cover; background-position: center; background-repeat: no-repeat;
     }
 
     .register-card {
       background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--glass-border); border-radius: 24px;
-      padding: 40px 45px; width: 100%; max-width: 450px;
+      padding: 40px 45px; width: 100%; max-width: 480px;
       box-shadow: 0 20px 50px rgba(0,0,0,0.2);
       animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
@@ -92,6 +92,7 @@
     /* =========================================
        FORM INPUTS 
        ========================================= */
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .input-group { margin-bottom: 20px; }
     .input-group label { 
       display: block; font-size: 0.9rem; font-weight: 700; color: #ffffff; 
@@ -116,11 +117,22 @@
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.15); 
     }
     
+    .input-glass option { background: var(--bg-light); color: var(--text-main); }
+    
     .input-icon { 
       position: absolute; left: 16px; top: 50%; transform: translateY(-50%); 
       color: var(--text-main); font-size: 1.1rem; z-index: 2; 
     }
 
+    .select-wrapper { position: relative; }
+    .select-wrapper::after {
+      content: '\f0d7';
+      font-family: "Font Awesome 6 Free"; font-weight: 900;
+      position: absolute; right: 18px; top: 50%; transform: translateY(-50%); 
+      color: var(--text-main); pointer-events: none;
+    }
+
+    .password-wrapper { position: relative; }
     .password-wrapper input { padding-right: 45px; }
     .toggle-password {
       position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
@@ -128,7 +140,13 @@
     }
     .toggle-password:hover { color: var(--accent); }
 
-    /* Syarat & Ketentuan */
+    hr.divider { border: none; border-top: 1px solid rgba(255,255,255,0.4); margin: 15px 0 25px; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 800; color: #ffffff;
+      text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
     .terms-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 25px; }
     .terms-group input[type="checkbox"] { width: 18px; height: 18px; min-width: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
     .terms-group label { font-size: 0.85rem; color: #ffffff; line-height: 1.5; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.3); cursor: pointer; }
@@ -157,6 +175,7 @@
       .btn-back { padding: 10px 14px; }
       .register-section { padding: 20px 15px; }
       .register-card { padding: 35px 25px; }
+      .input-row { grid-template-columns: 1fr; gap: 0; }
     }
   </style>
 </head>
@@ -164,8 +183,8 @@
 <body>
 
   <header class="navbar">
-    <a href="index.html" class="brand">
-      <div class="logo-icon"><img src="Logo.png" alt="Logo"></div>
+    <a href="../index.html" class="brand">
+      <div class="logo-icon"><img src="../Logo.png" alt="Logo"></div>
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
@@ -183,8 +202,18 @@
         <p>Daftarkan organisasi Anda ke Smart Room</p>
       </div>
 
-      <form action="loginorganisasi.html" method="GET">
+      <form id="formRegistrasiOrganisasi">
         
+        <div class="section-label">Data Organisasi</div>
+
+        <div class="input-group">
+          <label for="kode_organisasi">Kode Organisasi</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-id-card input-icon"></i>
+            <input type="text" id="kode_organisasi" name="kode_organisasi" class="input-glass" placeholder="Contoh: BEMFT" required>
+          </div>
+        </div>
+
         <div class="input-group">
           <label for="nama_organisasi">Nama Organisasi</label>
           <div class="input-wrapper">
@@ -194,20 +223,42 @@
         </div>
 
         <div class="input-group">
-          <label for="password">Password</label>
+          <label for="email">Email Organisasi</label>
           <div class="input-wrapper">
-            <i class="fa-solid fa-lock input-icon"></i>
+            <i class="fa-regular fa-envelope input-icon"></i>
+            <input type="email" id="email" name="email" class="input-glass" placeholder="organisasi@kampus.ac.id" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="no_hp">No. Handphone</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-phone input-icon"></i>
+            <input type="tel" id="no_hp" name="no_hp" class="input-glass" placeholder="08xxxxxxxxxx" required>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Keamanan Akun</div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <div class="password-wrapper">
             <input type="password" id="password" name="password" class="input-glass" placeholder="Min. 8 karakter" required>
-            <button type="button" class="toggle-password" onclick="togglePass('password', this)"><i class="fa-regular fa-eye"></i></button>
+            <button type="button" class="toggle-password" onclick="togglePass('password', this)" title="Tampilkan password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
           </div>
         </div>
 
         <div class="input-group">
           <label for="confirm_password">Konfirmasi Password</label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-lock input-icon"></i>
+          <div class="password-wrapper">
             <input type="password" id="confirm_password" name="confirm_password" class="input-glass" placeholder="Ulangi password" required>
-            <button type="button" class="toggle-password" onclick="togglePass('confirm_password', this)"><i class="fa-regular fa-eye"></i></button>
+            <button type="button" class="toggle-password" onclick="togglePass('confirm_password', this)" title="Tampilkan password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
           </div>
         </div>
 
@@ -216,29 +267,97 @@
           <label for="terms">Saya menyetujui <a href="#">Syarat & Ketentuan</a> serta <a href="#">Kebijakan Privasi</a> Smart Room Campus System.</label>
         </div>
 
-        <button type="submit" class="btn-register">DAFTAR SEKARANG</button>
+        <button type="submit" id="btnRegister" class="btn-register">DAFTAR SEKARANG</button>
 
         <div class="login-link">
           Sudah punya akun? <a href="loginorganisasi.html">Login di sini</a>
         </div>
+
       </form>
     </div>
   </main>
 
+  <!-- CryptoJS HARUS di-load sebelum digunakan untuk hash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <script>
-    function togglePass(id, btn) {
-      const input = document.getElementById(id);
+    // 1. Konfigurasi Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Fungsi untuk menampilkan/menyembunyikan password
+    function togglePass(fieldId, btn) {
+      const input = document.getElementById(fieldId);
       const icon = btn.querySelector('i');
-      input.type = input.type === 'password' ? 'text' : 'password';
-      icon.className = input.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
-    }
-    document.querySelector('form').addEventListener('submit', function(e) {
-      const pw = document.getElementById('password').value;
-      const cpw = document.getElementById('confirm_password').value;
-      if (pw !== cpw) {
-        e.preventDefault();
-        alert('Password dan Konfirmasi Password tidak cocok!');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
       }
+    }
+
+    // 2. Proses Form dan Simpan ke Firebase
+    document.getElementById('formRegistrasiOrganisasi').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const pw  = document.getElementById('password').value;
+      const cpw = document.getElementById('confirm_password').value;
+      
+      // Validasi Password Cocok
+      if (pw !== cpw) {
+        alert('Gagal: Password dan Konfirmasi Password tidak cocok!');
+        document.getElementById('confirm_password').focus();
+        return; 
+      }
+
+      // Ubah tombol jadi status loading
+      const btn = document.getElementById('btnRegister');
+      btn.innerText = "MENYIMPAN DATA...";
+      btn.disabled = true;
+
+      // Ambil Kode Organisasi untuk dijadikan ID Dokumen
+      const kodeOrganisasi = document.getElementById('kode_organisasi').value.trim();
+
+      // Hash password pakai SHA-256
+      const hashedPassword = CryptoJS.SHA256(pw).toString();
+
+      // Simpan ke koleksi "Organisasi"
+      db.collection("Organisasi").doc(kodeOrganisasi).set({
+          kodeOrganisasi: kodeOrganisasi,
+          namaOrganisasi: document.getElementById('nama_organisasi').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          no_hp: document.getElementById('no_hp').value.trim(),
+          password: hashedPassword,
+          role: "organisasi",
+          dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+          alert("Registrasi Organisasi Berhasil! Silakan Login menggunakan akun yang baru didaftarkan.");
+          window.location.href = "loginorganisasi.html";
+      })
+      .catch((error) => {
+          console.error("Error writing document: ", error);
+          alert("Terjadi kesalahan saat registrasi. Pastikan koneksi internet stabil.");
+          btn.innerText = "DAFTAR SEKARANG";
+          btn.disabled = false;
+      });
     });
   </script>
 </body>

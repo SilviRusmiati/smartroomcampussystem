@@ -73,7 +73,7 @@
     .login-wrapper {
       flex: 1; display: flex; align-items: center; justify-content: center;
       padding: 40px 20px;
-      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("bg.biru.jpeg");
+      background: linear-gradient(to bottom, rgba(30, 41, 59, 0.1), rgba(30, 41, 59, 0.2)), url("../bg.biru.jpeg");
       background-size: cover; background-position: center; background-repeat: no-repeat;
     }
 
@@ -174,15 +174,15 @@
 <body>
 
   <header class="navbar">
-    <a href="index.html" class="brand">
-      <div class="logo-icon"><img src="Logo.png" alt="Logo SRCS"></div>
+    <a href="../index.html" class="brand">
+      <div class="logo-icon"><img src="../Logo.png" alt="Logo SRCS"></div>
       <div class="brand-text">
         <div class="title">Smart Room</div>
         <div class="subtitle">Campus System</div>
       </div>
     </a>
     
-    <a href="index.html" class="btn-back">
+    <a href="../index.html" class="btn-back">
       <i class="fa-solid fa-arrow-left"></i> <span>Kembali</span>
     </a>
   </header>
@@ -195,13 +195,13 @@
         <p>Silakan masuk menggunakan akun portal Anda</p>
       </div>
 
-      <form action="dasboard.html" method="GET">
+      <form id="formLoginOrganisasi">
         
         <div class="input-group">
-          <label>Username</label>
+          <label>Email atau Kode Organisasi</label>
           <div class="input-wrapper">
-            <i class="fa-regular fa-user input-icon"></i>
-            <input type="text" class="input-glass" placeholder="Masukkan username" required>
+            <i class="fa-regular fa-envelope input-icon"></i>
+            <input type="text" id="loginOrganisasi" class="input-glass" placeholder="Contoh: BEMFT atau bem@kampus.ac.id" required>
           </div>
         </div>
 
@@ -209,15 +209,15 @@
           <label>Password</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" class="input-glass" placeholder="Masukkan password Anda" required>
+            <input type="password" id="loginPassword" class="input-glass" placeholder="Masukkan password Anda" required>
           </div>
         </div>
 
         <div class="forgot-pass">
-          <a href="lupapassword.html">Lupa Password?</a>
+          <a href="lupapasword_organisasi.html">Lupa Password?</a>
         </div>
 
-        <button type="submit" class="btn-submit">LOGIN ORGANISASI</button>
+        <button type="submit" id="btnLogin" class="btn-submit">LOGIN ORGANISASI</button>
 
         <div class="register-link">
           Belum punya akun? <a href="registrasiorganisasi.html">Registrasi Sekarang</a>
@@ -228,5 +228,88 @@
     </div>
   </main>
 
+  <!-- CryptoJS harus di-load sebelum digunakan untuk hash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // 1. Konfigurasi Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+      authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+      projectId: "smartroomcampussystem-a9487",
+      storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+      messagingSenderId: "677979528686",
+      appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+      measurementId: "G-Q7Z2K2E5T2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 2. Event Listener Form Login
+    document.getElementById('formLoginOrganisasi').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('btnLogin');
+        const userInput = document.getElementById('loginOrganisasi').value.trim();
+        const passInput = document.getElementById('loginPassword').value; 
+        
+        if (!userInput || !passInput) {
+            alert("Harap isi Kode Organisasi/Email dan Password!");
+            return;
+        }
+
+        btn.innerText = "MEMERIKSA DATA...";
+        btn.disabled = true;
+
+        // Fungsi untuk verifikasi password (pakai hash)
+        function cekPassword(data, docId) {
+            const hashedInput = CryptoJS.SHA256(passInput).toString();
+            if (data.password === hashedInput) {
+                localStorage.setItem("loggedInOrganisasiKode", docId);
+                localStorage.setItem("loggedInOrganisasiNama", data.namaOrganisasi);
+                alert("Selamat Datang, " + data.namaOrganisasi + "!");
+                window.location.href = "dashboardorganisasi.html";
+            } else {
+                alert("Login Gagal! Password salah.");
+                btn.innerText = "LOGIN ORGANISASI";
+                btn.disabled = false;
+            }
+        }
+
+        // Logic Query: bisa pakai email atau Kode Organisasi
+        let promise;
+        if (userInput.includes('@')) {
+            // Cari berdasarkan email
+            promise = db.collection("Organisasi").where("email", "==", userInput).get().then(snapshot => {
+                if (!snapshot.empty) return { data: snapshot.docs[0].data(), id: snapshot.docs[0].id };
+                return null;
+            });
+        } else {
+            // Cari berdasarkan Kode Organisasi
+            promise = db.collection("Organisasi").doc(userInput).get().then(doc => {
+                if (doc.exists) return { data: doc.data(), id: doc.id };
+                return null;
+            });
+        }
+
+        promise.then(result => {
+            if (result) {
+                cekPassword(result.data, result.id);
+            } else {
+                alert("Akun tidak ditemukan!");
+                btn.innerText = "LOGIN ORGANISASI";
+                btn.disabled = false;
+            }
+        }).catch(err => {
+            console.error(err);
+            alert("Terjadi kesalahan sistem, coba lagi.");
+            btn.innerText = "LOGIN ORGANISASI";
+            btn.disabled = false;
+        });
+    });
+  </script>
 </body>
 </html>
