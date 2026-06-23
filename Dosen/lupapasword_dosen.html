@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lupa Password</title>
+<title>Lupa Password Dosen</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +22,7 @@
 
 body {
     min-height: 100vh;
-    background: url(bg.biru.jpeg);
+    background: url("../bg.biru.jpeg");
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,6 +32,7 @@ body {
 
 /* Layer Blur */
 body::before {
+    content: "";
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.12);
@@ -86,17 +87,13 @@ header {
 .container {
     width: 90%;
     max-width: 850px;
-
     display: flex;
     overflow: hidden;
-
     border-radius: 30px;
-
     background: rgba(255,255,255,0.15);
     border: 1px solid rgba(255,255,255,.3);
-
     backdrop-filter: blur(20px);
-
+    -webkit-backdrop-filter: blur(20px);
     box-shadow: 0 20px 40px rgba(0,0,0,.2);
 }
 
@@ -111,12 +108,9 @@ header {
 .left {
     display: flex;
     flex-direction: column;
-
     justify-content: center;
     align-items: center;
-
     text-align: center;
-
     color: white;
 }
 
@@ -145,17 +139,12 @@ header {
 .icon-box {
     width: 80px;
     height: 80px;
-
     border-radius: 50%;
-
     background: rgba(255,255,255,.3);
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     margin: 0 auto 20px;
-
     font-size: 35px;
 }
 
@@ -168,9 +157,7 @@ header {
 .subtitle {
     text-align: center;
     color: rgba(255,255,255,.85);
-
     margin: 15px 0 30px;
-
     line-height: 1.6;
     font-size: 15px;
 }
@@ -183,50 +170,35 @@ header {
 
 .input-group label {
     display: block;
-
     color: white;
-
     margin-bottom: 8px;
-
     font-weight: 600;
 }
 
 .input-group input {
     width: 100%;
-
     padding: 15px 18px;
-
     border: none;
     outline: none;
-
     border-radius: 12px;
-
     background: rgba(255,255,255,.9);
-
     font-size: 15px;
+    color: #1e293b;
 }
 
 /* ===== BUTTON ===== */
 
 button {
     width: 100%;
-
     padding: 16px;
-
     border: none;
     border-radius: 12px;
-
     background: #1F2F56;
-
     color: white;
-
     font-size: 16px;
     font-weight: 600;
-
     cursor: pointer;
-
     margin-top: 10px;
-
     transition: .3s;
 }
 
@@ -235,17 +207,18 @@ button:hover {
     transform: translateY(-3px);
 }
 
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 /* ===== LINK ===== */
 
 .back {
     display: block;
-
     text-align: center;
-
     margin-top: 20px;
-
     color: white;
-
     text-decoration: none;
 }
 
@@ -256,25 +229,20 @@ button:hover {
 /* ===== RESPONSIVE ===== */
 
 @media(max-width:850px) {
-
     header {
         padding: 0 25px;
     }
-
     .container {
         flex-direction: column;
     }
-
     .left,
     .right {
         width: 100%;
         padding: 35px;
     }
-
     .logo-text h2 {
         font-size: 22px;
     }
-
     .right h1 {
         font-size: 28px;
     }
@@ -286,72 +254,195 @@ button:hover {
 <body>
 
 <!-- HEADER -->
-
 <header>
-
     <div class="logo-area">
-        <img src="Logo .png" alt="Logo">
-
+        <img src="../Logo.png" alt="Logo">
         <div class="logo-text">
-            <h2>Smarts Room</h2>
+            <h2>Smart Room</h2>
             <p>CAMPUS SYSTEM</p>
         </div>
     </div>
-
 </header>
 
 <!-- CARD -->
-
 <div class="container">
 
     <!-- KIRI -->
-
     <div class="left">
-
         <img src="https://cdn-icons-png.flaticon.com/512/6195/6195700.png" alt="Lock">
-
-        <h2>Keamanan Akun Anda</h2>
-
-        <p>
-            Kami akan membantu Anda mereset password dengan aman melalui email yang terdaftar.
+        <h2 id="leftTitle">Keamanan Akun Anda</h2>
+        <p id="leftText">
+            Kami akan membantu Anda mereset password dengan aman melalui data akun yang terdaftar.
         </p>
-
     </div>
 
     <!-- KANAN -->
-
     <div class="right">
-
-        <div class="icon-box">
+        <div class="icon-box" id="mainIcon">
             🔒
         </div>
 
-        <h1>Lupa Password?</h1>
-
-        <p class="subtitle">
-            Masukkan email Anda dan kami akan mengirimkan link untuk mengatur ulang password.
+        <h1 id="mainTitle">Lupa Password?</h1>
+        <p class="subtitle" id="mainSubtitle">
+            Masukkan NIDN dan email terdaftar Anda untuk memverifikasi kepemilikan akun.
         </p>
 
-        <form>
+        <form id="formResetPassword">
+            
+            <!-- STEP 1: VERIFIKASI AKUN (TAMPIL AWAL) -->
+            <div id="stepVerifikasi">
+                <div class="input-group">
+                    <label>NIDN Dosen</label>
+                    <input type="text" id="verifyNidn" placeholder="Masukkan NIDN Anda" required>
+                </div>
 
-            <div class="input-group">
-                <label>Email</label>
-                <input type="email" placeholder="Masukkan email Anda">
+                <div class="input-group">
+                    <label>Email Terdaftar</label>
+                    <input type="email" id="verifyEmail" placeholder="Masukkan email Anda" required>
+                </div>
             </div>
 
-            <button type="submit">
-                Kirim Link Reset Password
+            <!-- STEP 2: INPUT PASSWORD BARU (DISEMBUNYIKAN SEBELUM VERIFIKASI) -->
+            <div id="stepPasswordBaru" style="display: none;">
+                <div class="input-group">
+                    <label>Password Baru</label>
+                    <input type="password" id="passwordBaru" placeholder="Minimal 8 karakter">
+                </div>
+
+                <div class="input-group">
+                    <label>Konfirmasi Password Baru</label>
+                    <input type="password" id="konfirmasiPassword" placeholder="Ulangi password baru">
+                </div>
+            </div>
+
+            <button type="submit" id="btnSubmit">
+                Verifikasi Data Akun
             </button>
 
         </form>
 
-        <a href="#" class="back">
+        <!-- Link kembali ke halaman login dosen -->
+        <a href="logindosen.html" class="back">
             ← Kembali ke Halaman Login
         </a>
 
     </div>
 
 </div>
+
+<!-- CryptoJS untuk hash password -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<!-- FIREBASE COMPAT SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAYl1n0CVXiIAMaf_bXca8GuwMcwI4vNR8",
+    authDomain: "smartroomcampussystem-a9487.firebaseapp.com",
+    projectId: "smartroomcampussystem-a9487",
+    storageBucket: "smartroomcampussystem-a9487.firebasestorage.app",
+    messagingSenderId: "677979528686",
+    appId: "1:677979528686:web:d21d66d3fc724b026042ff",
+    measurementId: "G-Q7Z2K2E5T2"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Status penanda form berada di langkah ke-1 atau ke-2
+  let currentStep = 1; 
+  let verifiedNidn = ""; 
+
+  document.getElementById('formResetPassword').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById('btnSubmit');
+
+      // EKSEKUSI LANGKAH 1: PROSES VERIFIKASI NIDN & EMAIL
+      if (currentStep === 1) {
+          const inputNidn = document.getElementById('verifyNidn').value.trim();
+          const inputEmail = document.getElementById('verifyEmail').value.trim();
+
+          if (!inputNidn || !inputEmail) {
+              alert("Harap isi NIDN dan Email!");
+              return;
+          }
+
+          btn.innerText = "MEMERIKSA DATA...";
+          btn.disabled = true;
+
+          db.collection("Dosen").doc(inputNidn).get().then((doc) => {
+              if (doc.exists && doc.data().email === inputEmail) {
+                  // Jika data cocok, ganti status ke langkah 2
+                  currentStep = 2;
+                  verifiedNidn = inputNidn;
+
+                  // Transformasi teks halaman secara dinamis
+                  document.getElementById('mainTitle').innerText = "Password Baru";
+                  document.getElementById('mainSubtitle').innerText = "Data cocok! Silakan buat password baru Anda sekarang.";
+                  document.getElementById('leftTitle').innerText = "Perbarui Akses Anda";
+                  document.getElementById('leftText').innerText = "Gunakan sandi baru yang aman dan mudah Anda ingat.";
+                  document.getElementById('mainIcon').innerText = "🔑";
+
+                  // Sembunyikan input verifikasi, tampilkan input ganti password
+                  document.getElementById('stepVerifikasi').style.display = "none";
+                  document.getElementById('stepPasswordBaru').style.display = "block";
+                  
+                  // Aktifkan kembali fungsi required pada input ganti sandi
+                  document.getElementById('passwordBaru').required = true;
+                  document.getElementById('konfirmasiPassword').required = true;
+
+                  btn.innerText = "Simpan Password Baru";
+                  btn.disabled = false;
+              } else {
+                  alert("Verifikasi Gagal: NIDN atau Email tidak terdaftar/tidak cocok!");
+                  btn.innerText = "Verifikasi Data Akun";
+                  btn.disabled = false;
+              }
+          }).catch((err) => {
+              console.error(err);
+              alert("Error: Terjadi kendala koneksi ke database.");
+              btn.innerText = "Verifikasi Data Akun";
+              btn.disabled = false;
+          });
+      } 
+      
+      // EKSEKUSI LANGKAH 2: UPDATE PASSWORD BARU KE DATABASE
+      else if (currentStep === 2) {
+          const newPw = document.getElementById('passwordBaru').value;
+          const confirmPw = document.getElementById('konfirmasiPassword').value;
+
+          if (newPw !== confirmPw) {
+              alert("Gagal: Password baru dan konfirmasi tidak cocok!");
+              return;
+          }
+          if (newPw.length < 8) {
+              alert("Gagal: Password baru minimal harus 8 karakter!");
+              return;
+          }
+
+          btn.innerText = "MEMPERBARUI PASSWORD...";
+          btn.disabled = true;
+
+          // Hash password baru pakai SHA-256
+          const hashedPassword = CryptoJS.SHA256(newPw).toString();
+
+          db.collection("Dosen").doc(verifiedNidn).update({
+              password: hashedPassword
+          })
+          .then(() => {
+              alert("Sukses: Password Anda berhasil diatur ulang! Silakan login kembali.");
+              window.location.href = "logindosen.html";
+          })
+          .catch((err) => {
+              alert("Gagal memperbarui sandi: " + err.message);
+              btn.innerText = "Simpan Password Baru";
+              btn.disabled = false;
+          });
+      }
+  });
+</script>
 
 </body>
 </html>
