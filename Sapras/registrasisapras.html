@@ -256,6 +256,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
   <script>
     function togglePass(id, btn) {
@@ -280,47 +281,52 @@
     const db = firebase.firestore();
 
     document.getElementById('formRegistrasiSapras').addEventListener('submit', function(e) {
-      e.preventDefault();
+    e.preventDefault();
 
-      const pw = document.getElementById('password').value;
-      const cpw = document.getElementById('confirm_password').value;
+    const pw = document.getElementById('password').value;
+    const cpw = document.getElementById('confirm_password').value;
 
-      if (pw !== cpw) {
+    // 1. Validasi Password
+    if (pw !== cpw) {
         alert('Gagal: Password dan Konfirmasi Password tidak cocok!');
         document.getElementById('confirm_password').focus();
         return;
-      }
-      if (pw.length < 8) {
+    }
+    if (pw.length < 8) {
         alert('Gagal: Password minimal harus 8 karakter!');
         return;
-      }
+    }
 
-      const btn = document.getElementById('btnRegister');
-      btn.innerText = "MENYIMPAN DATA...";
-      btn.disabled = true;
+    // --- LOGIKA HASHING ---
+    // Mengubah password asli menjadi SHA-256
+    const hashedPassword = CryptoJS.SHA256(pw).toString();
 
-      const nip = document.getElementById('nip').value.trim();
+    const btn = document.getElementById('btnRegister');
+    btn.innerText = "MENYIMPAN DATA...";
+    btn.disabled = true;
 
-      // Menyimpan data murni identitas akun ke koleksi database Sapras
-      db.collection("Sapras").doc(nip).set({
-          nip: nip,
-          no_hp: document.getElementById('no_hp').value,
-          nama: document.getElementById('nama').value,
-          email: document.getElementById('email').value.trim(),
-          password: pw,
-          dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-          alert("Registrasi Sapras Berhasil! Silakan Login menggunakan NIP akun petugas Anda.");
-          window.location.href = "loginsapras.html";
-      })
-      .catch((error) => {
-          console.error("Error saving sapras:", error);
-          alert("Terjadi kendala sistem saat menyimpan data petugas.");
-          btn.innerText = "DAFTAR SEKARANG";
-          btn.disabled = false;
-      });
+    const nip = document.getElementById('nip').value.trim();
+
+    // 2. Menyimpan data ke koleksi database Sapras
+    db.collection("Sapras").doc(nip).set({
+        nip: nip,
+        no_hp: document.getElementById('no_hp').value,
+        nama: document.getElementById('nama').value,
+        email: document.getElementById('email').value.trim(),
+        password: hashedPassword, // <-- Tersimpan sebagai hasil hash!
+        dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        alert("Registrasi Sapras Berhasil! Silakan Login menggunakan NIP akun petugas Anda.");
+        window.location.href = "loginsapras.html";
+    })
+    .catch((error) => {
+        console.error("Error saving sapras:", error);
+        alert("Terjadi kendala sistem saat menyimpan data petugas.");
+        btn.innerText = "DAFTAR SEKARANG";
+        btn.disabled = false;
     });
+  });
   </script>
 </body>
 </html>
