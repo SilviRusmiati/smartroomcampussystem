@@ -369,19 +369,25 @@
       // Ambil NIM untuk dijadikan ID Dokumen
       const nim = document.getElementById('nim').value;
 
-      // Perintah menyimpan ke Firestore (Koleksi "Users")
-      db.collection("Users").doc(nim).set({
-          nim: nim,
-          angkatan: document.getElementById('angkatan').value,
-          nama: document.getElementById('nama').value,
-          email: document.getElementById('email').value,
-          no_hp: document.getElementById('no_hp').value,
-          jurusan: document.getElementById('jurusan').value,
-          fakultas: document.getElementById('fakultas').value,
-          password: pw, 
-          dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
+      // ... (setelah validasi password cocok)
+
+// 1. Buat variable hashed password
+const hashedPassword = CryptoJS.SHA256(pw).toString();
+
+// 2. Simpan ke Firestore menggunakan variabel yang sudah di-hash
+db.collection("Users").doc(nim).set({
+    nim: nim,
+    angkatan: document.getElementById('angkatan').value,
+    nama: document.getElementById('nama').value,
+    email: document.getElementById('email').value,
+    no_hp: document.getElementById('no_hp').value,
+    jurusan: document.getElementById('jurusan').value,
+    fakultas: document.getElementById('fakultas').value,
+    password: hashedPassword, // <--- Ini yang diubah!
+    dibuatPada: firebase.firestore.FieldValue.serverTimestamp()
+})
+.then(() => {
+    
           alert("Registrasi Berhasil! Silakan Login menggunakan akun yang baru didaftarkan.");
           window.location.href = "loginmahasiswa.html"; // Lempar ke halaman login
       })
@@ -393,6 +399,7 @@
       });
     });
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 </body>
 </html>

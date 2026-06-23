@@ -275,43 +275,74 @@
       }
 
       // Deteksi otomatis: Jika ada tanda "@", berarti dia login menggunakan Email
-      if (userInput.includes('@')) {
-          db.collection("Users").where("email", "==", userInput).get().then((querySnapshot) => {
-              if (!querySnapshot.empty) {
-                  // Ambil data pertama yang cocok dengan email tersebut
-                  const doc = querySnapshot.docs[0];
-                  prosesLoginSukses(doc.data(), doc.id);
-              } else {
-                  alert("Login Gagal! Akun dengan email tersebut tidak terdaftar.");
-                  btn.innerText = "MASUK SEKARANG";
-                  btn.disabled = false;
-              }
-          }).catch((error) => {
-              console.error("Error getting document:", error);
-              alert("Terjadi kesalahan sistem saat mencoba login.");
-              btn.innerText = "MASUK SEKARANG";
-              btn.disabled = false;
-          });
-      } 
-      // Jika tidak ada tanda "@", berarti dia login menggunakan NIM
-      else {
-          db.collection("Users").doc(userInput).get().then((doc) => {
-              if (doc.exists) {
-                  prosesLoginSukses(doc.data(), doc.id);
-              } else {
-                  alert("Login Gagal! Akun dengan NIM tersebut tidak terdaftar.");
-                  btn.innerText = "MASUK SEKARANG";
-                  btn.disabled = false;
-              }
-          }).catch((error) => {
-              console.error("Error getting document:", error);
-              alert("Terjadi kesalahan sistem saat mencoba login.");
-              btn.innerText = "MASUK SEKARANG";
-              btn.disabled = false;
-          });
-      }
+if (userInput.includes('@')) {
+    db.collection("Users").where("email", "==", userInput).get().then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+            // Ambil data pertama yang cocok dengan email tersebut
+            const doc = querySnapshot.docs[0];
+            const data = doc.data();
+
+            // 1. Ambil password dari input login
+            const passInput = document.getElementById('password').value;
+
+            // 2. Hash password inputan user untuk dibandingkan
+            const hashedInput = CryptoJS.SHA256(passInput).toString();
+
+            // 3. Verifikasi apakah password cocok dengan yang ada di database
+            if (data.password === hashedInput) {
+                prosesLoginSukses(data, doc.id);
+            } else {
+                alert("Login Gagal! Password salah.");
+                btn.innerText = "MASUK SEKARANG";
+                btn.disabled = false;
+            }
+        } else {
+            alert("Login Gagal! Akun dengan email tersebut tidak terdaftar.");
+            btn.innerText = "MASUK SEKARANG";
+            btn.disabled = false;
+        }
+    }).catch((error) => {
+        console.error("Error getting document:", error);
+        alert("Terjadi kesalahan sistem saat mencoba login.");
+        btn.innerText = "MASUK SEKARANG";
+        btn.disabled = false;
     });
+}
+      // Jika tidak ada tanda "@", berarti dia login menggunakan NIM
+else {
+    db.collection("Users").doc(userInput).get().then((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            
+            // 1. Ambil password dari input login
+            const passInput = document.getElementById('password').value;
+            
+            // 2. Hash password inputan user untuk dibandingkan
+            const hashedInput = CryptoJS.SHA256(passInput).toString();
+            
+            // 3. Verifikasi apakah password cocok dengan yang ada di database
+            if (data.password === hashedInput) {
+                prosesLoginSukses(data, doc.id);
+            } else {
+                alert("Login Gagal! Password salah.");
+                btn.innerText = "MASUK SEKARANG";
+                btn.disabled = false;
+            }
+        } else {
+            alert("Login Gagal! Akun dengan NIM tersebut tidak terdaftar.");
+            btn.innerText = "MASUK SEKARANG";
+            btn.disabled = false;
+        }
+    }).catch((error) => {
+        console.error("Error getting document:", error);
+        alert("Terjadi kesalahan sistem saat mencoba login.");
+        btn.innerText = "MASUK SEKARANG";
+        btn.disabled = false;
+    });
+}
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
 
 </body>
 </html>
